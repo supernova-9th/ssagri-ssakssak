@@ -1,6 +1,5 @@
 package com.supernova.ssagrissakssak.feed.persistence.repository.entity;
 
-import com.supernova.ssagrissakssak.core.exception.ContentType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -47,4 +46,12 @@ public class BoardEntity {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @Getter
+    @AllArgsConstructor
+    public enum ContentType {
+        FACEBOOK,
+        TWITTER,
+        INSTAGRAM,
+        THREADS
+    }
 }
