@@ -1,5 +1,6 @@
 package com.supernova.ssagrissakssak.feed.controller.request;
 
+import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -15,4 +16,11 @@ public record UserCreateRequest(
         @Pattern(regexp = ".*[^0-9].*", message = "숫자로만 이루어진 비밀번호는 사용 불가합니다.")
         String password
 ) {
+        public UserEntity toUser(String encodedPassword) {
+                return UserEntity.builder()
+                        .email(email)
+                        .password(encodedPassword)
+                        .activeStatus(false)
+                        .build();
+        }
 }
