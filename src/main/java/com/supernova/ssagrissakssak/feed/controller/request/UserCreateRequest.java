@@ -16,10 +16,10 @@ public record UserCreateRequest(
         @Pattern(regexp = ".*[^0-9].*", message = "숫자로만 이루어진 비밀번호는 사용 불가합니다.")
         String password
 ) {
-        public UserEntity toUser(String encodedPassword) {
+        public UserEntity toUser() {
                 return UserEntity.builder()
                         .email(email)
-                        .password(encodedPassword)
+                        .password(password)
                         .activeStatus(false)
                         .build();
         }
