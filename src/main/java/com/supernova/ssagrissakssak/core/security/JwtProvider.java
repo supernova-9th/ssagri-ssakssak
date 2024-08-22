@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-@Component
 public class JwtProvider {
     private static final String EMAIL = "email";
     private static final String AUTHORIZATION = "Authorization";

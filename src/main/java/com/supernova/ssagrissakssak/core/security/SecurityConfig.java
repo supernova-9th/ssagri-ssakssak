@@ -32,7 +32,6 @@ import java.util.List;
 public class SecurityConfig {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final JwtTokenFilter jwtTokenFilter;
     private final UserDetailsService userDetailsService;
 
     @Bean
@@ -56,12 +55,22 @@ public class SecurityConfig {
     }
 
     @Bean
+    JwtProvider jwtProvider() {
+        return new JwtProvider();
+    }
+
+    @Bean
+    JwtTokenFilter jwtTokenFilter() {
+        return new JwtTokenFilter(jwtProvider(), userDetailsService);
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(CsrfConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .cors(Customizer.withDefaults())
