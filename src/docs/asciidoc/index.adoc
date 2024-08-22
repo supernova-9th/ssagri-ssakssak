@@ -1,0 +1,14 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= 싸그리싹싹 REST API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[User-API]]
+== User API
+include::user/user.adoc[]
