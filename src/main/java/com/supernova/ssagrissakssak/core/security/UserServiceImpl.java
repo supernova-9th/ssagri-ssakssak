@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserDetailsService {
         UserEntity user = userRepository.findByEmail(username).orElseThrow(UserNotFoundException::new);
 
         if(!user.isActive()) {
-            throw new DisabledException("User Account is disabled");
+            throw new DisabledException("유저가 활성화되지 않았습니다.");
         }
 
         return new LoginUser(user);
