@@ -20,7 +20,7 @@ spring:
 
 security:
   jwt:
-    secret: sSaGrIsSaKsSaCk
-  expiration:
-    access: 1800000    # 30 minutes in milliseconds
-    refresh: 2592000000    # 30 days in milliseconds
+    secret: sSaGrIsSaKsSaKsSaGr1sSaKsSaKsSaGrIsSaKsSaKsSaGr1sSaKsSaK
+    expiration:
+      access: 1800000    # 30 minutes in milliseconds
+      refresh: 2592000000    # 30 days in milliseconds
