@@ -1,5 +1,6 @@
 package com.supernova.ssagrissakssak.feed.persistence.repository.entity;
 
+import com.supernova.ssagrissakssak.core.enums.ContentType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,13 +35,4 @@ public class BoardEntity extends BaseEntity {
 
     @Column(name = "share_count", nullable = false)
     private int shareCount;
-
-    @Getter
-    @AllArgsConstructor
-    public enum ContentType {
-        FACEBOOK,
-        TWITTER,
-        INSTAGRAM,
-        THREADS
-    }
 }
