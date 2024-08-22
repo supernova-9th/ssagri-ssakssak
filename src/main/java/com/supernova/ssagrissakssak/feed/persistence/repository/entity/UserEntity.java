@@ -30,4 +30,8 @@ public class UserEntity {
 
     @Column(name = "verification_code")
     private String verificationCode;
+
+    public boolean isActive() {
+        return activeStatus;
+    }
 }
