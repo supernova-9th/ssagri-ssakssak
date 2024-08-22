@@ -14,13 +14,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserEntity join(UserEntity user) {
+    public Long join(UserEntity user) {
        if(userRepository.existsByEmail(user.getEmail())) {
            throw new UserRegistrationException();
        }
 
        user.encodePassword(passwordEncoder.encode(user.getPassword()));
 
-        return userRepository.save(user);
+        return userRepository.save(user).getId();
     }
 }
