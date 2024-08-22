@@ -1,9 +1,6 @@
 package com.supernova.ssagrissakssak.feed.persistence.repository.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -11,10 +8,11 @@ import lombok.*;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "user")
+@Table(name = "user", uniqueConstraints = {@UniqueConstraint(name = "email_uk", columnNames = {"email"})})
 public class UserEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -24,12 +22,12 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "refresh_token", nullable = false)
+    @Column(name = "refresh_token")
     private String refreshToken;
 
     @Column(name = "active_status", nullable = false)
     private boolean activeStatus;
 
-    @Column(name = "verification_code", nullable = false)
+    @Column(name = "verification_code")
     private String verificationCode;
 }
