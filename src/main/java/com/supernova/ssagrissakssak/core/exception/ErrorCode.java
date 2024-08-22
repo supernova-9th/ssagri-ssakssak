@@ -9,6 +9,8 @@ public enum ErrorCode {
     NOT_FOUND("해당 자원을 찾을 수 없습니다."),
     BAD_REQUEST("잘못된 요청입니다."),
     USER_NOT_FOUND("해당 회원를 찾을 수 없습니다."),
+    EXPIRED_TOKEN("토큰이 만료되었습니다."),
+    INVALID_TOKEN("유효하지 않은 토큰입니다.")
     ;
 
     private String defaultMessage;
