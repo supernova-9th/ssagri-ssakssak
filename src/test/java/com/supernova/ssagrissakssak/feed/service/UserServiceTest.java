@@ -43,11 +43,10 @@ class UserServiceTest {
         given(userRepository.save(any(UserEntity.class))).willReturn(savedUser);
 
         // When
-        UserEntity result = userService.join(UserFixture.initUser());
+        Long result = userService.join(UserFixture.initUser());
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.getEmail()).isEqualTo(initUser.getEmail());
         then(userRepository).should().existsByEmail(initUser.getEmail());
         then(passwordEncoder).should().encode(initUser.getPassword());
         then(userRepository).should().save(any(UserEntity.class));
