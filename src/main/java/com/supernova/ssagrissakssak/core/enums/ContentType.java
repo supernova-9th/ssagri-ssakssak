@@ -1,4 +1,4 @@
-package com.supernova.ssagrissakssak.core.exception;
+package com.supernova.ssagrissakssak.core.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

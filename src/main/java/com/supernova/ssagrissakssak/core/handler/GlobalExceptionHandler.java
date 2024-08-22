@@ -17,21 +17,19 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(SsagriException.class)
-    public ResultResponse handleWantedException(SsagriException ex) {
+    public ResultResponse<Void> handleWantedException(SsagriException ex) {
         return new ResultResponse<>(ex.getHttpStatus(), ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResultResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+    public ResultResponse<Void> handleValidationExceptions(MethodArgumentNotValidException ex) {
         StringBuilder sb = new StringBuilder();
         ex.getBindingResult().getAllErrors().forEach(x -> sb.append(x).append("\n"));
-        errors.values().forEach(x -> sb.append(x).append("\n"));
         return new ResultResponse<>(HttpStatus.BAD_REQUEST, sb.toString().trim());
     }
 
     @ExceptionHandler(value = Exception.class)
-    public ResultResponse unhandledException(Exception e, HttpServletRequest request) {
+    public ResultResponse<Void> unhandledException(Exception e, HttpServletRequest request) {
         log.error("error occur {}", e);
         return new ResultResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
