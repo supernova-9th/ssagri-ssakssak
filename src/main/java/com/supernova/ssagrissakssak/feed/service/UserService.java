@@ -6,6 +6,7 @@ import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntit
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,12 +15,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public Long join(UserEntity user) {
-       if(userRepository.existsByEmail(user.getEmail())) {
-           throw new UserRegistrationException();
-       }
+        if(userRepository.existsByEmail(user.getEmail())) {
+            throw new UserRegistrationException();
+        }
 
-       user.encodePassword(passwordEncoder.encode(user.getPassword()));
+        user.encodePassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user).getId();
     }
