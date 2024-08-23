@@ -7,7 +7,7 @@ public class UserRegistrationException extends SsagriException {
         super(HttpStatus.CONFLICT, ErrorCode.EMAIL_ALREADY_EXISTS);
     }
     public UserRegistrationException(ErrorCode errorCode) {
-        super(HttpStatus.UNAUTHORIZED, errorCode);
+        super(HttpStatus.CONFLICT, errorCode);
     }
 
     public UserRegistrationException(HttpStatus httpStatus, ErrorCode errorCode) {
