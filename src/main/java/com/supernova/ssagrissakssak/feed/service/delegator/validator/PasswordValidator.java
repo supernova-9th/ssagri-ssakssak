@@ -15,8 +15,7 @@ public class PasswordValidator implements AcceptValidator {
 
     @Override
     public void validate(UserEntity user, AcceptRequestModel acceptModel) {
-        String password = passwordEncoder.encode(acceptModel.password());
-        if (!user.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(acceptModel.password(), user.getPassword())) {
             throw new InvalidPasswordException();
         }
     }
