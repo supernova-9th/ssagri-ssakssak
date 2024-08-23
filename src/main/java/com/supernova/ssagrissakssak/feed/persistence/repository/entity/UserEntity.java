@@ -38,4 +38,8 @@ public class UserEntity {
     public void encodePassword(String password) {
         this.password = password;
     }
+
+    public void changeActiveStatus() {
+        this.activeStatus = true;
+    }
 }

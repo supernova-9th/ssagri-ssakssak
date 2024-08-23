@@ -1,9 +1,13 @@
 package com.supernova.ssagrissakssak.feed.service;
 
 import com.supernova.ssagrissakssak.core.exception.ErrorCode;
+import com.supernova.ssagrissakssak.core.exception.InvalidVerificationCodeException;
+import com.supernova.ssagrissakssak.core.exception.UserNotFoundException;
 import com.supernova.ssagrissakssak.core.exception.UserRegistrationException;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
 import com.supernova.ssagrissakssak.feed.persistence.repository.UserRepository;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntity;
+import com.supernova.ssagrissakssak.feed.service.delegator.ApproveValidateDelegator;
 import com.supernova.ssagrissakssak.fixture.UserFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,11 +17,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -30,6 +38,9 @@ class UserServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private ApproveValidateDelegator approveValidateDelegator;
 
     @Test
     @DisplayName("회원가입을 한다.")
@@ -67,5 +78,81 @@ class UserServiceTest {
         then(userRepository).should().existsByEmail(initUser.getEmail());
         then(passwordEncoder).shouldHaveNoInteractions();
         then(userRepository).shouldHaveNoMoreInteractions();
+    }
+
+    @Test
+    @DisplayName("사용자가 존재하고 모든 검증이 통과되면 활성화 상태가 변경된다.")
+    void testApproveSuccess() {
+        // Given
+        String email = "test@example.com";
+        String password = "encodedPassword";
+        String authenticationCode = "ABC123";
+
+        UserEntity user = UserEntity.builder()
+                .email(email)
+                .password(password)
+                .activeStatus(false)
+                .verificationCode("ABC123")
+                .build();
+
+        ApproveRequestModel approveModel = new ApproveRequestModel(email, password, authenticationCode);
+
+        when(userRepository.findByEmail(approveModel.email())).thenReturn(Optional.of(user));
+
+        // When
+        userService.approve(approveModel);
+
+        // Then
+        verify(approveValidateDelegator, times(1)).validate(user, approveModel);
+        verify(userRepository, times(1)).findByEmail(approveModel.email());
+        assert user.isActive();
+    }
+
+    @Test
+    @DisplayName("사용자가 존재하지 않으면 UserNotFoundException을 던진다.")
+    void testApproveUserNotFound() {
+        String email = "test@example.com";
+        String password = "encodedPassword";
+        String authenticationCode = "ABC123";
+        boolean activeStatus = false;
+
+        ApproveRequestModel approveModel = new ApproveRequestModel(email, password, authenticationCode);
+
+        // Given
+        when(userRepository.findByEmail(approveModel.email())).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThrows(UserNotFoundException.class, () -> userService.approve(approveModel));
+
+        verify(approveValidateDelegator, times(0)).validate(any(), any());
+    }
+
+    @Test
+    @DisplayName("검증 중 예외가 발생하면 활성화 상태가 변경되지 않는다.")
+    void testApproveValidationFails() {
+        // Given
+        String email = "test@example.com";
+        String password = "encodedPassword";
+        String authenticationCode = "ABC123";
+        boolean activeStatus = false;
+
+        UserEntity user = UserEntity.builder()
+                .email(email)
+                .password(password)
+                .activeStatus(activeStatus)
+                .verificationCode("ABC123")
+                .build();
+
+        ApproveRequestModel approveModel = new ApproveRequestModel(email, password, authenticationCode);
+
+        when(userRepository.findByEmail(approveModel.email())).thenReturn(Optional.of(user));
+        doThrow(new InvalidVerificationCodeException()).when(approveValidateDelegator).validate(user, approveModel);
+
+        // When & Then
+        assertThrows(InvalidVerificationCodeException.class, () -> userService.approve(approveModel));
+
+        verify(userRepository, times(1)).findByEmail(approveModel.email());
+        verify(approveValidateDelegator, times(1)).validate(user, approveModel);
+        assert !user.isActive();
     }
 }
