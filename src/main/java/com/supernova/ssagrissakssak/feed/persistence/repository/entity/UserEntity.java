@@ -34,4 +34,8 @@ public class UserEntity {
     public boolean isActive() {
         return activeStatus;
     }
+
+    public void encodePassword(String password) {
+        this.password = password;
+    }
 }
