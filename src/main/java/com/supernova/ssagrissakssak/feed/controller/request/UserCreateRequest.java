@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.apache.commons.lang3.RandomStringUtils;
+
+import static com.supernova.ssagrissakssak.core.constants.UserConstant.VERIFICATION_CODE_LENGTH;
 
 public record UserCreateRequest(
         @NotBlank(message = "이메일은 필수입니다.")
@@ -20,6 +23,7 @@ public record UserCreateRequest(
                 return UserEntity.builder()
                         .email(email)
                         .password(password)
+                        .verificationCode(RandomStringUtils.random(VERIFICATION_CODE_LENGTH, true, true))
                         .activeStatus(false)
                         .build();
         }
