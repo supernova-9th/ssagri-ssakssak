@@ -12,6 +12,8 @@ public enum ErrorCode {
     EXPIRED_TOKEN("토큰이 만료되었습니다."),
     INVALID_TOKEN("유효하지 않은 토큰입니다."),
     EMAIL_ALREADY_EXISTS("이미 사용중인 이메일입니다."),
+    INVALID_PASSWORD("잘못된 비밀번호입니다."),
+    INVALID_VERIFICATION_CODE("인증 코드가 올바르지 않습니다.")
     ;
 
     private String defaultMessage;
