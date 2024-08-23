@@ -1,7 +1,7 @@
 package com.supernova.ssagrissakssak.feed.service.delegator.validator;
 
 import com.supernova.ssagrissakssak.core.exception.UserRegistrationException;
-import com.supernova.ssagrissakssak.feed.controller.request.AcceptRequestModel;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,11 +32,11 @@ class ActiveStatusValidatorTest {
                 .activeStatus(true)
                 .build();
 
-        AcceptRequestModel acceptModel = new AcceptRequestModel(email, encodedPassword, authenticationCode);
+        ApproveRequestModel approveModel = new ApproveRequestModel(email, encodedPassword, authenticationCode);
 
         // then
         assertThrows(UserRegistrationException.class, () -> {
-            activeStatusValidator.validate(user, acceptModel);
+            activeStatusValidator.validate(user, approveModel);
         });
     }
 
@@ -54,9 +54,9 @@ class ActiveStatusValidatorTest {
                 .activeStatus(false)
                 .build();
 
-        AcceptRequestModel acceptModel = new AcceptRequestModel(email, password, authenticationCode);
+        ApproveRequestModel approveModel = new ApproveRequestModel(email, password, authenticationCode);
 
         // when
-        activeStatusValidator.validate(user, acceptModel);
+        activeStatusValidator.validate(user, approveModel);
     }
 }

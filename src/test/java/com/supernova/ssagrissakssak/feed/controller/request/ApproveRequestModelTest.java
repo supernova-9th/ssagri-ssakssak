@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AcceptRequestModelTest {
+class ApproveRequestModelTest {
 
     private Validator validator;
 
@@ -23,8 +23,8 @@ class AcceptRequestModelTest {
 
     @Test
     @DisplayName("이메일, 비밀번호, 인증 코드가 올바를 경우 request dto가 생성된다.")
-    void testValidAcceptRequestModel() {
-        AcceptRequestModel request = new AcceptRequestModel("test@example.com", "password123", "ABC123");
+    void testValidApproveRequestModel() {
+        ApproveRequestModel request = new ApproveRequestModel("test@example.com", "password123", "ABC123");
         var violations = validator.validate(request);
         assertThat(violations).isEmpty();
     }
@@ -33,7 +33,7 @@ class AcceptRequestModelTest {
     @ValueSource(strings = {"invalid-email", "test@", "@example.com"})
     @DisplayName("이메일 형식이 올바르지 않을 경우 예외가 발생한다.")
     void emailValidate(String email) {
-        AcceptRequestModel request = new AcceptRequestModel(email, "password123", "ABC123");
+        ApproveRequestModel request = new ApproveRequestModel(email, "password123", "ABC123");
         var violations = validator.validate(request);
         assertThat(violations)
                 .isNotEmpty()
@@ -47,7 +47,7 @@ class AcceptRequestModelTest {
     @ValueSource(strings = {"", " "})
     @DisplayName("이메일은 비어있을 수 없다.")
     void emailValidate2(String email) {
-        AcceptRequestModel request = new AcceptRequestModel(email, "password123", "ABC123");
+        ApproveRequestModel request = new ApproveRequestModel(email, "password123", "ABC123");
         var violations = validator.validate(request);
         assertThat(violations)
                 .isNotEmpty()
@@ -61,7 +61,7 @@ class AcceptRequestModelTest {
     @ValueSource(strings = {"", " "})
     @DisplayName("비밀번호는 비어있을 수 없다.")
     void passwordValidate(String password) {
-        AcceptRequestModel request = new AcceptRequestModel("test@example.com", password, "ABC123");
+        ApproveRequestModel request = new ApproveRequestModel("test@example.com", password, "ABC123");
         var violations = validator.validate(request);
         assertThat(violations)
                 .isNotEmpty()
@@ -75,7 +75,7 @@ class AcceptRequestModelTest {
     @ValueSource(strings = {"short", "123456789"})
     @DisplayName("비밀번호는 10자 이상이어야 한다.")
     void passwordValidate2(String password) {
-        AcceptRequestModel request = new AcceptRequestModel("test@example.com", password, "ABC123");
+        ApproveRequestModel request = new ApproveRequestModel("test@example.com", password, "ABC123");
         var violations = validator.validate(request);
         assertThat(violations)
                 .isNotEmpty()
@@ -89,7 +89,7 @@ class AcceptRequestModelTest {
     @ValueSource(strings = {"123456789"})
     @DisplayName("비밀번호는 숫자로만 이루어질 수 없다.")
     void passwordValidate3(String password) {
-        AcceptRequestModel request = new AcceptRequestModel("test@example.com", password, "ABC123");
+        ApproveRequestModel request = new ApproveRequestModel("test@example.com", password, "ABC123");
         var violations = validator.validate(request);
         assertThat(violations)
                 .isNotEmpty()
@@ -103,7 +103,7 @@ class AcceptRequestModelTest {
     @ValueSource(strings = {"ABC12", "A1B2C3D4", "A1@3B6"})
     @DisplayName("인증 코드는 6자리여야 하며, 숫자와 영문자로만 구성되어야 한다.")
     void authenticationCodeValidate(String authenticationCode) {
-        AcceptRequestModel request = new AcceptRequestModel("test@example.com", "password123", authenticationCode);
+        ApproveRequestModel request = new ApproveRequestModel("test@example.com", "password123", authenticationCode);
         var violations = validator.validate(request);
         assertThat(violations)
                 .isNotEmpty()

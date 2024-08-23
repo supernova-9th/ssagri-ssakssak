@@ -1,7 +1,7 @@
 package com.supernova.ssagrissakssak.feed.service.delegator.validator;
 
 import com.supernova.ssagrissakssak.core.exception.InvalidPasswordException;
-import com.supernova.ssagrissakssak.feed.controller.request.AcceptRequestModel;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +30,7 @@ class PasswordValidatorTest {
     private PasswordEncoder passwordEncoder;
 
     private UserEntity user;
-    private AcceptRequestModel acceptModel;
+    private ApproveRequestModel approveModel;
 
     @BeforeEach
     void setUp() {
@@ -44,14 +44,14 @@ class PasswordValidatorTest {
                 .password(password)
                 .build();
 
-        acceptModel = new AcceptRequestModel(email, differentPassword, authenticationCode);
+        approveModel = new ApproveRequestModel(email, differentPassword, authenticationCode);
     }
 
     @Test
     @DisplayName("비밀번호가 일치하지 않으면 InvalidPasswordException을 던진다.")
     void testValidateThrowsInvalidPasswordException() {
         assertThrows(InvalidPasswordException.class, () -> {
-            passwordValidator.validate(user, acceptModel);
+            passwordValidator.validate(user, approveModel);
         });
     }
 
@@ -61,8 +61,8 @@ class PasswordValidatorTest {
         String email = "test@example.com";
         String password = "password";
         String authenticationCode = "ABC123";
-        acceptModel = new AcceptRequestModel(email, password, authenticationCode);
+        approveModel = new ApproveRequestModel(email, password, authenticationCode);
 
-        passwordValidator.validate(user, acceptModel);
+        passwordValidator.validate(user, approveModel);
     }
 }

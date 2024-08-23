@@ -1,7 +1,7 @@
 package com.supernova.ssagrissakssak.feed.service.delegator.validator;
 
 import com.supernova.ssagrissakssak.core.exception.InvalidVerificationCodeException;
-import com.supernova.ssagrissakssak.feed.controller.request.AcceptRequestModel;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,9 +33,9 @@ class VerificationCodeValidatorTest {
                 .verificationCode(authenticationCode)
                 .build();
 
-        AcceptRequestModel acceptModel = new AcceptRequestModel(email, password, "ABC123");
+        ApproveRequestModel approveModel = new ApproveRequestModel(email, password, "ABC123");
 
-        verificationCodeValidator.validate(user, acceptModel);
+        verificationCodeValidator.validate(user, approveModel);
     }
 
     @Test
@@ -53,11 +53,11 @@ class VerificationCodeValidatorTest {
                 .verificationCode(authenticationCode)
                 .build();
 
-        AcceptRequestModel acceptModel = new AcceptRequestModel(email, password, differentAuthenticationCode);
+        ApproveRequestModel approveModel = new ApproveRequestModel(email, password, differentAuthenticationCode);
 
         // then
         assertThrows(InvalidVerificationCodeException.class, () -> {
-            verificationCodeValidator.validate(user, acceptModel);
+            verificationCodeValidator.validate(user, approveModel);
         });
     }
 }

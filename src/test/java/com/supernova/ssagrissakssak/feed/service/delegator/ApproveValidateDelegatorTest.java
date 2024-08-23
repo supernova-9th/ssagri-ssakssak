@@ -1,6 +1,6 @@
 package com.supernova.ssagrissakssak.feed.service.delegator;
 
-import com.supernova.ssagrissakssak.feed.controller.request.AcceptRequestModel;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntity;
 import com.supernova.ssagrissakssak.feed.service.delegator.validator.ActiveStatusValidator;
 import com.supernova.ssagrissakssak.feed.service.delegator.validator.PasswordValidator;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-class AcceptValidateDelegatorTest {
+class ApproveValidateDelegatorTest {
 
     @Mock
     private ActiveStatusValidator activeStatusValidator;
@@ -28,15 +28,15 @@ class AcceptValidateDelegatorTest {
     private VerificationCodeValidator verificationCodeValidator;
 
     @InjectMocks
-    private AcceptValidateDelegator acceptValidateDelegator;
+    private ApproveValidateDelegator approveValidateDelegator;
 
     private UserEntity user;
-    private AcceptRequestModel acceptModel;
+    private ApproveRequestModel approveModel;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        acceptValidateDelegator = new AcceptValidateDelegator(List.of(activeStatusValidator, passwordValidator, verificationCodeValidator));
+        approveValidateDelegator = new ApproveValidateDelegator(List.of(activeStatusValidator, passwordValidator, verificationCodeValidator));
 
         String email = "test@example.com";
         String password = "encodedPassword";
@@ -51,31 +51,31 @@ class AcceptValidateDelegatorTest {
                 .verificationCode(authenticationCode)
                 .build();
 
-        acceptModel = new AcceptRequestModel(email, differentPassword, authenticationCode);
+        approveModel = new ApproveRequestModel(email, differentPassword, authenticationCode);
     }
 
     @Test
     @DisplayName("모든 validators가 순차적으로 호출되어야 한다.")
     void testValidate() {
-        acceptValidateDelegator.validate(user, acceptModel);
+        approveValidateDelegator.validate(user, approveModel);
 
-        verify(activeStatusValidator, times(1)).validate(user, acceptModel);
-        verify(passwordValidator, times(1)).validate(user, acceptModel);
-        verify(verificationCodeValidator, times(1)).validate(user, acceptModel);
+        verify(activeStatusValidator, times(1)).validate(user, approveModel);
+        verify(passwordValidator, times(1)).validate(user, approveModel);
+        verify(verificationCodeValidator, times(1)).validate(user, approveModel);
     }
 
     @Test
     @DisplayName("하나의 validator에서 예외가 발생하면 다음 validator는 호출되지 않는다.")
     void testValidateStopsOnException() {
-        doThrow(new RuntimeException()).when(activeStatusValidator).validate(user, acceptModel);
+        doThrow(new RuntimeException()).when(activeStatusValidator).validate(user, approveModel);
 
         try {
-            acceptValidateDelegator.validate(user, acceptModel);
+            approveValidateDelegator.validate(user, approveModel);
         } catch (RuntimeException ignored) {
         }
 
-        verify(activeStatusValidator, times(1)).validate(user, acceptModel);
-        verify(passwordValidator, times(0)).validate(user, acceptModel);
-        verify(verificationCodeValidator, times(0)).validate(user, acceptModel);
+        verify(activeStatusValidator, times(1)).validate(user, approveModel);
+        verify(passwordValidator, times(0)).validate(user, approveModel);
+        verify(verificationCodeValidator, times(0)).validate(user, approveModel);
     }
 }

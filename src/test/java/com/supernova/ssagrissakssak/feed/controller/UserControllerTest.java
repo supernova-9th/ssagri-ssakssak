@@ -1,6 +1,6 @@
 package com.supernova.ssagrissakssak.feed.controller;
 
-import com.supernova.ssagrissakssak.feed.controller.request.AcceptRequestModel;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
 import com.supernova.ssagrissakssak.feed.controller.request.UserCreateRequest;
 import com.supernova.ssagrissakssak.feed.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -58,9 +58,9 @@ class UserControllerTest extends RestDocsSupport {
     }
 
     @Test
-    void accept() throws Exception {
+    void approve() throws Exception {
         // given
-        var request = new AcceptRequestModel("test@email.com", "password123", "ABC123");
+        var request = new ApproveRequestModel("test@email.com", "password123", "ABC123");
 
         // when & then
         mockMvc.perform(put("/auth/users/approve")
@@ -69,7 +69,7 @@ class UserControllerTest extends RestDocsSupport {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("user-accept",
+                .andDo(document("user-approve",
                         requestFields(
                                 fieldWithPath("email").type(JsonFieldType.STRING)
                                         .description("유저 이메일"),
