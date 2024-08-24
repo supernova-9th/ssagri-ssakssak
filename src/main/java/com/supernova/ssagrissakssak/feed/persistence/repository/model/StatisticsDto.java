@@ -3,7 +3,9 @@ package com.supernova.ssagrissakssak.feed.persistence.repository.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
@@ -12,9 +14,9 @@ public class StatisticsDto {
     private LocalDateTime dateTime;
     private Long value;
 
-    public StatisticsDto(String dateTimeStr, Long value) {
+    public StatisticsDto(String dateTimeStr, Number value) {
         this.dateTime = parseDateTime(dateTimeStr);
-        this.value = value;
+        this.value = value.longValue();
     }
 
     private LocalDateTime parseDateTime(String dateTimeStr) {
@@ -22,6 +24,6 @@ public class StatisticsDto {
             return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
 
-        return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return LocalDate.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atTime(LocalTime.MIN);
     }
 }
