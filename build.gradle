@@ -49,9 +49,10 @@ dependencies {
 
     implementation "org.apache.commons:commons-lang3:${commonLangVersion}"
     implementation "org.json:json:${jsonVersion}"
+
     implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
-    implementation "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
-    implementation "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
 
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     implementation "org.projectlombok:lombok:${lombokVersion}"
