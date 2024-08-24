@@ -27,3 +27,19 @@ include::{snippets}/user-approve/request-fields.adoc[]
 include::{snippets}/user-approve/http-response.adoc[]
 ==== Response Fields
 include::{snippets}/user-approve/response-fields.adoc[]
+
+
+[[user-sign-in]]
+=== 로그인
+
+==== Curl Request
+include::{snippets}/user-sign-in/curl-request.adoc[]
+==== HTTP Request
+include::{snippets}/user-sign-in/http-request.adoc[]
+==== Request Fields
+include::{snippets}/user-sign-in/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/user-sign-in/http-response.adoc[]
+==== Response Fields
+include::{snippets}/user-sign-in/response-fields.adoc[]
