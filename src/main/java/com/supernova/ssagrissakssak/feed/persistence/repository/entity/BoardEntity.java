@@ -39,6 +39,9 @@ public class BoardEntity extends BaseEntity {
     @Column(name = "share_count", nullable = false)
     private int shareCount;
 
+    /**
+     * 게시물의 좋아요 수를 1 증가시킵니다.
+     */
     public void incrementLikeCount() {
         this.likeCount++;
     }
