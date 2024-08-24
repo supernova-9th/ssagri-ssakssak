@@ -40,11 +40,11 @@ class BoardServiceTest {
                 .build();
     }
     @Test
-    void addLikeToBoardContent_Success() {
+    void addLikeBoardContent_Success() {
         when(boardRepository.findByContentId("test123")).thenReturn(testBoard);
         when(snsApiClient.callSnsLikeApi(any())).thenReturn(new SnsApiClient.SnsApiResponse(true));
 
-        boardService.addLikeToBoardContent("test123");
+        boardService.addLikeBoardContent("test123");
 
         verify(boardRepository).findByContentId("test123");
         verify(snsApiClient).callSnsLikeApi(any());

@@ -1,5 +1,7 @@
 package com.supernova.ssagrissakssak.feed.controller;
 
+import com.supernova.ssagrissakssak.core.exception.BoardNotFoundException;
+import com.supernova.ssagrissakssak.core.exception.SnsApiException;
 import com.supernova.ssagrissakssak.feed.service.BoardService;
 import com.supernova.ssagrissakssak.mockuser.MockUser;
 import org.junit.jupiter.api.Test;
@@ -9,13 +11,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BoardController.class)
@@ -29,21 +28,37 @@ class BoardControllerTest {
 
     @Test
     @MockUser
-    void addLikeToBoardContent_Success() throws Exception {
-        String contentId = "test123";
-        doNothing().when(boardService).addLikeToBoardContent(contentId);
+    void addLikeBoardContent_Success() throws Exception {
+        doNothing().when(boardService).addLikeBoardContent("test123");
 
-        mockMvc.perform(post("/boards/{contentId}/like", contentId)
-                        .with(csrf()))
+        mockMvc.perform(post("/boards/{contentId}/like", "test123")
+                .with(csrf()))
                 .andExpect(status().isOk())
-                .andDo(document("board-like",
-                        pathParameters(
-                                parameterWithName("contentId").description("게시물 ID")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description("응답 상태 코드"),
-                                fieldWithPath("message").description("응답 메시지")
-                        )
-                ));
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("success"));
+    }
+
+    @Test
+    @MockUser
+    void addLikeBoardContent_BoardNotFound() throws Exception {
+        doThrow(new BoardNotFoundException("test123")).when(boardService).addLikeBoardContent("test123");
+
+        mockMvc.perform(post("/boards/{contentId}/like", "test123")
+                .with(csrf()))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("게시물을 찾을 수 없습니다. ContentId: test123"));
+    }
+
+    @Test
+    @MockUser
+    void addLikeBoardContent_SnsApiFailure() throws Exception {
+        doThrow(new SnsApiException("좋아요 API 호출 실패")).when(boardService).addLikeBoardContent("test123");
+
+        mockMvc.perform(post("/boards/{contentId}/like", "test123")
+                .with(csrf()))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.status").value(500))
+                .andExpect(jsonPath("$.message").value("SNS API 호출 중 오류 발생: 좋아요 API 호출 실패"));
     }
 }

@@ -2,6 +2,8 @@ package com.supernova.ssagrissakssak.feed.service;
 
 
 import com.supernova.ssagrissakssak.client.SnsApiClient;
+import com.supernova.ssagrissakssak.core.exception.BoardNotFoundException;
+import com.supernova.ssagrissakssak.core.exception.SnsApiException;
 import com.supernova.ssagrissakssak.feed.persistence.repository.BoardRepository;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.BoardEntity;
 import jakarta.transaction.Transactional;
@@ -19,9 +21,11 @@ public class BoardService {
      * 게시물에 좋아요를 추가합니다.
      *
      * @param contentId 좋아요를 추가할 게시물의 ID
+     * @throws BoardNotFoundException 게시물을 찾을 수 없을 때 발생합니다.
+     * * @throws SnsApiException SNS API 호출 중 오류가 발생했을 때 발생합니다.
      */
     @Transactional
-    public void addLikeToBoardContent(String contentId) {
+    public void addLikeBoardContent(String contentId) {
         BoardEntity board = boardRepository.findByContentId(contentId);
         if (board != null) {
             SnsApiClient.SnsApiRequest request =

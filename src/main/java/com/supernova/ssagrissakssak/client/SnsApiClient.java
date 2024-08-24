@@ -1,7 +1,10 @@
 package com.supernova.ssagrissakssak.client;
 
 import com.supernova.ssagrissakssak.core.enums.ContentType;
+import com.supernova.ssagrissakssak.core.exception.SnsApiException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -38,14 +41,14 @@ public class SnsApiClient {
      * SNS API 응답 결과를 나타내는 클래스입니다.
      */
     public static class SnsApiResponse {
-        private final boolean success;
+        private final boolean isSuccess;
 
-        public SnsApiResponse(boolean success) {
-            this.success = success;
+        public SnsApiResponse(boolean isSuccess) {
+            this.isSuccess = isSuccess;
         }
 
         public boolean isSuccess() {
-            return success;
+            return isSuccess;
         }
     }
 
@@ -54,14 +57,15 @@ public class SnsApiClient {
      *
      * @param request API 요청 정보
      * @return API 호출 결과
+     * @throws SnsApiException API 호출 중 오류가 발생했을 때 발생합니다.
      */
     public SnsApiResponse callSnsLikeApi(SnsApiRequest request) {
         String url = getSnsLikeUrl(request.type, request.contentId);
         try {
-            restTemplate.postForEntity(url, null, String.class);
-            return new SnsApiResponse(true);
-        } catch (Exception e) {
-            return new SnsApiResponse(false);
+            ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
+            return new SnsApiResponse(response.getStatusCode().is2xxSuccessful());
+        } catch (RestClientException e) {
+            throw new SnsApiException("좋아요 API 호출 실패: " + e.getMessage(), e);
         }
     }
 
