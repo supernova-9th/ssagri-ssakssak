@@ -1,6 +1,6 @@
 package com.supernova.ssagrissakssak.feed.controller;
 
-import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequest;
 import com.supernova.ssagrissakssak.feed.controller.request.UserCreateRequest;
 import com.supernova.ssagrissakssak.feed.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -60,7 +60,7 @@ class UserControllerTest extends RestDocsSupport {
     @Test
     void approve() throws Exception {
         // given
-        var request = new ApproveRequestModel("test@email.com", "password123", "ABC123");
+        var request = new ApproveRequest("test@email.com", "password123", "ABC123");
 
         // when & then
         mockMvc.perform(put("/auth/users/approve")

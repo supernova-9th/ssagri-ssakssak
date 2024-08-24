@@ -4,7 +4,7 @@ import com.supernova.ssagrissakssak.core.exception.ErrorCode;
 import com.supernova.ssagrissakssak.core.exception.InvalidVerificationCodeException;
 import com.supernova.ssagrissakssak.core.exception.UserNotFoundException;
 import com.supernova.ssagrissakssak.core.exception.UserRegistrationException;
-import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequest;
 import com.supernova.ssagrissakssak.feed.persistence.repository.UserRepository;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntity;
 import com.supernova.ssagrissakssak.feed.service.delegator.ApproveValidateDelegator;
@@ -95,7 +95,7 @@ class UserServiceTest {
                 .verificationCode("ABC123")
                 .build();
 
-        ApproveRequestModel approveModel = new ApproveRequestModel(email, password, authenticationCode);
+        ApproveRequest approveModel = new ApproveRequest(email, password, authenticationCode);
 
         when(userRepository.findByEmail(approveModel.email())).thenReturn(Optional.of(user));
 
@@ -116,7 +116,7 @@ class UserServiceTest {
         String authenticationCode = "ABC123";
         boolean activeStatus = false;
 
-        ApproveRequestModel approveModel = new ApproveRequestModel(email, password, authenticationCode);
+        ApproveRequest approveModel = new ApproveRequest(email, password, authenticationCode);
 
         // Given
         when(userRepository.findByEmail(approveModel.email())).thenReturn(Optional.empty());
@@ -143,7 +143,7 @@ class UserServiceTest {
                 .verificationCode("ABC123")
                 .build();
 
-        ApproveRequestModel approveModel = new ApproveRequestModel(email, password, authenticationCode);
+        ApproveRequest approveModel = new ApproveRequest(email, password, authenticationCode);
 
         when(userRepository.findByEmail(approveModel.email())).thenReturn(Optional.of(user));
         doThrow(new InvalidVerificationCodeException()).when(approveValidateDelegator).validate(user, approveModel);
