@@ -1,7 +1,7 @@
 package com.supernova.ssagrissakssak.feed.service;
 
 
-import com.supernova.ssagrissakssak.feed.external.SnsApiClient;
+import com.supernova.ssagrissakssak.client.SnsApiClient;
 import com.supernova.ssagrissakssak.feed.persistence.repository.BoardRepository;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.BoardEntity;
 import jakarta.transaction.Transactional;
@@ -21,7 +21,7 @@ public class BoardService {
         BoardEntity board = boardRepository.findByContentId(contentId);
 
         if (board != null) {
-            boolean success = snsApiClient.likeApiStatus(board.getType(), contentId);
+            boolean success = snsApiClient.isApiCallSuccessful(board.getType(), contentId);
             if (success) {
                 board.incrementLikeCount();
                 boardRepository.save(board);

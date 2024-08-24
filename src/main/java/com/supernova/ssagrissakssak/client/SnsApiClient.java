@@ -1,4 +1,4 @@
-package com.supernova.ssagrissakssak.feed.external;
+package com.supernova.ssagrissakssak.client;
 
 import com.supernova.ssagrissakssak.core.enums.ContentType;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ public class SnsApiClient {
         this.restTemplate = restTemplate;
     }
 
-    public boolean likeApiStatus(ContentType type, String contentId) {
+    public boolean isApiCallSuccessful(ContentType type, String contentId) {
         String url = getLikeUrl(type, contentId);
         try {
             restTemplate.postForEntity(url, null, String.class);
