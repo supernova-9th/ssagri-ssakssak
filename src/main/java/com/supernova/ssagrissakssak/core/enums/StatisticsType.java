@@ -12,9 +12,7 @@ public enum StatisticsType {
     COUNT(SimpleExpression::count),
     VIEW_COUNT(boardEntity -> boardEntity.viewCount.sum()),
     LIKE_COUNT(boardEntity -> boardEntity.likeCount.sum()),
-    SHARE_COUNT(boardEntity -> boardEntity.shareCount.sum()),
-    DATE(null),
-    HOUR(null);
+    SHARE_COUNT(boardEntity -> boardEntity.shareCount.sum());
 
     private final Function<QBoardEntity, NumberExpression<? extends Number>> valueExpression;
 
@@ -27,9 +25,5 @@ public enum StatisticsType {
             throw new UnsupportedOperationException("This type does not have a value expression");
         }
         return valueExpression.apply(boardEntity);
-    }
-
-    public boolean isTimeType() {
-        return this == DATE || this == HOUR;
     }
 }
