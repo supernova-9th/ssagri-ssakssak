@@ -90,7 +90,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자가 존재하고 모든 검증이 통과되면 활성화 상태가 변경된다.")
-    void testApproveSuccess() {
+    void approve() {
         // Given
         String email = "test@example.com";
         String password = "encodedPassword";
@@ -118,7 +118,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자가 존재하지 않으면 UserNotFoundException을 던진다.")
-    void testApproveUserNotFound() {
+    void approveFailsWhenUserNotFound() {
         String email = "test@example.com";
         String password = "encodedPassword";
         String authenticationCode = "ABC123";
@@ -137,7 +137,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("검증 중 예외가 발생하면 활성화 상태가 변경되지 않는다.")
-    void testApproveValidationFails() {
+    void approveFailsWhenValidationThrowException() {
         // Given
         String email = "test@example.com";
         String password = "encodedPassword";
@@ -166,7 +166,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("로그인을 한다.")
-    void signInSuccessTest() throws Exception {
+    void signIn() throws Exception {
         // given
         String email = "test@email.com";
         String password = "password123";
