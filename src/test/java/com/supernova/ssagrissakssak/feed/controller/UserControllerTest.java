@@ -28,6 +28,7 @@ class UserControllerTest extends RestDocsSupport {
     UserService userService;
 
     @Test
+    @DisplayName("회원가입 테스트")
     void join() throws Exception {
         // given
         var request = new UserCreateRequest("test@email.com", "password123");
@@ -61,6 +62,7 @@ class UserControllerTest extends RestDocsSupport {
     }
 
     @Test
+    @DisplayName("사용자 승인 테스트")
     void approve() throws Exception {
         // given
         var request = new ApproveRequest("test@email.com", "password123", "ABC123");
