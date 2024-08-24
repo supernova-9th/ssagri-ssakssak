@@ -1,9 +1,11 @@
 package com.supernova.ssagrissakssak.feed.controller;
 
 import com.supernova.ssagrissakssak.core.wrapper.ResultResponse;
-import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequest;
+import com.supernova.ssagrissakssak.feed.controller.request.SignInRequest;
 import com.supernova.ssagrissakssak.feed.controller.request.UserCreateRequest;
 import com.supernova.ssagrissakssak.feed.controller.response.DefaultIdResponse;
+import com.supernova.ssagrissakssak.feed.controller.response.TokenResponse;
 import com.supernova.ssagrissakssak.feed.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +28,13 @@ public class UserController {
     }
 
     @PutMapping("/auth/users/approve")
-    public ResultResponse<Void> approve(@Valid @RequestBody ApproveRequestModel approveRequestModel) {
-        userService.approve(approveRequestModel);
+    public ResultResponse<Void> approve(@Valid @RequestBody ApproveRequest approveRequest) {
+        userService.approve(approveRequest);
         return new ResultResponse<>();
+    }
+
+    @PostMapping("/auth/users/sign-in")
+    public ResultResponse<TokenResponse> signIn(@Valid @RequestBody SignInRequest signInRequest) {
+        return new ResultResponse<>(userService.signIn(signInRequest));
     }
 }

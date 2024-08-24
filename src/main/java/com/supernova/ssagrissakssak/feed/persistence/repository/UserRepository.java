@@ -10,4 +10,6 @@ public interface UserRepository extends DefaultJpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
 
     Boolean existsByEmail(String email);
+
+    Optional<UserEntity> findByEmailAndActiveStatus(String email, boolean isActive);
 }

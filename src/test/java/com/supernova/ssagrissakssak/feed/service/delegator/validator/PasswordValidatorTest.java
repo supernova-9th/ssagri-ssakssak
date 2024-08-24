@@ -1,7 +1,7 @@
 package com.supernova.ssagrissakssak.feed.service.delegator.validator;
 
 import com.supernova.ssagrissakssak.core.exception.InvalidPasswordException;
-import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequest;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +30,7 @@ class PasswordValidatorTest {
     private PasswordEncoder passwordEncoder;
 
     private UserEntity user;
-    private ApproveRequestModel approveModel;
+    private ApproveRequest approveModel;
 
     @BeforeEach
     void setUp() {
@@ -44,7 +44,7 @@ class PasswordValidatorTest {
                 .password(password)
                 .build();
 
-        approveModel = new ApproveRequestModel(email, differentPassword, authenticationCode);
+        approveModel = new ApproveRequest(email, differentPassword, authenticationCode);
     }
 
     @Test
@@ -61,7 +61,7 @@ class PasswordValidatorTest {
         String email = "test@example.com";
         String password = "password";
         String authenticationCode = "ABC123";
-        approveModel = new ApproveRequestModel(email, password, authenticationCode);
+        approveModel = new ApproveRequest(email, password, authenticationCode);
 
         passwordValidator.validate(user, approveModel);
     }

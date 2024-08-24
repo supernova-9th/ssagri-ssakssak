@@ -42,4 +42,8 @@ public class UserEntity {
     public void changeActiveStatus() {
         this.activeStatus = true;
     }
+
+    public void registerRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

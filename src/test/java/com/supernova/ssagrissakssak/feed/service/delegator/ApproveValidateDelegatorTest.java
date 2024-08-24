@@ -1,6 +1,6 @@
 package com.supernova.ssagrissakssak.feed.service.delegator;
 
-import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequestModel;
+import com.supernova.ssagrissakssak.feed.controller.request.ApproveRequest;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntity;
 import com.supernova.ssagrissakssak.feed.service.delegator.validator.ActiveStatusValidator;
 import com.supernova.ssagrissakssak.feed.service.delegator.validator.PasswordValidator;
@@ -31,7 +31,7 @@ class ApproveValidateDelegatorTest {
     private ApproveValidateDelegator approveValidateDelegator;
 
     private UserEntity user;
-    private ApproveRequestModel approveModel;
+    private ApproveRequest approveModel;
 
     @BeforeEach
     void setUp() {
@@ -51,7 +51,7 @@ class ApproveValidateDelegatorTest {
                 .verificationCode(authenticationCode)
                 .build();
 
-        approveModel = new ApproveRequestModel(email, differentPassword, authenticationCode);
+        approveModel = new ApproveRequest(email, differentPassword, authenticationCode);
     }
 
     @Test
