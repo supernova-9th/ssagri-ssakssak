@@ -4,8 +4,7 @@ import com.supernova.ssagrissakssak.core.enums.ContentType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -41,7 +40,8 @@ public class BoardEntity extends BaseEntity {
     private int shareCount;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<BoardHashtag> boardHashtags;
+    @Builder.Default
+    private Set<BoardHashtagEntity> boardHashtags = new HashSet<>();
 
     public void viewCountUp() {
         this.viewCount += 1;

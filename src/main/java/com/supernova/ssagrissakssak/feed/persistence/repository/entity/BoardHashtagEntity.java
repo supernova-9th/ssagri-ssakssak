@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "board_hashtag")
-public class BoardHashtag {
+public class BoardHashtagEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
