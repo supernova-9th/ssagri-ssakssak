@@ -43,4 +43,7 @@ public class BoardEntity extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BoardHashtag> boardHashtags;
 
+    public void viewCountUp() {
+        this.viewCount += 1;
+    }
 }
