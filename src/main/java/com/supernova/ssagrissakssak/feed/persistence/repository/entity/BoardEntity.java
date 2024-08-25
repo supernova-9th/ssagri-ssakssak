@@ -4,6 +4,10 @@ import com.supernova.ssagrissakssak.core.enums.ContentType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 @Getter
 @Entity
 @Builder
@@ -35,4 +39,8 @@ public class BoardEntity extends BaseEntity {
 
     @Column(name = "share_count", nullable = false)
     private int shareCount;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<BoardHashtag> boardHashtags;
+
 }
