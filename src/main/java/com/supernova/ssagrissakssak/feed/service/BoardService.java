@@ -26,15 +26,17 @@ public class BoardService {
      */
     @Transactional
     public void addLikeBoardContent(String contentId) {
-        BoardEntity board = boardRepository.findByContentId(contentId);
-        if (board != null) {
-            SnsApiClient.SnsApiRequest request =
-                    new SnsApiClient.SnsApiRequest(board.getType(), contentId);
-            SnsApiClient.SnsApiResponse response = snsApiClient.callSnsLikeApi(request);
-            if (response.isSuccess()) {
-                board.incrementLikeCount();
-                boardRepository.save(board);
-            }
+        BoardEntity board = boardRepository.findByContentId(contentId)
+                .orElseThrow(() -> new BoardNotFoundException(contentId));
+
+        SnsApiClient.SnsApiResponse response = snsApiClient.callSnsLikeApi(
+                new SnsApiClient.SnsApiRequest(board.getType(), contentId));
+
+        if (response.isSuccess()) {
+            board.incrementLikeCount();
+            boardRepository.save(board);
+        } else {
+            throw new SnsApiException("좋아요 API 호출 실패");
         }
     }
 }

@@ -11,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,16 +42,20 @@ class BoardServiceTest {
                 .shareCount(5)
                 .build();
     }
+
     @Test
     void addLikeBoardContent_Success() {
-        when(boardRepository.findByContentId("test123")).thenReturn(testBoard);
+        // given
+        when(boardRepository.findByContentId(testBoard.getContentId())).thenReturn(Optional.of(testBoard));
         when(snsApiClient.callSnsLikeApi(any())).thenReturn(new SnsApiClient.SnsApiResponse(true));
 
-        boardService.addLikeBoardContent("test123");
+        // when
+        boardService.addLikeBoardContent(testBoard.getContentId());
 
-        verify(boardRepository).findByContentId("test123");
+        // then
+        verify(boardRepository).findByContentId(testBoard.getContentId());
         verify(snsApiClient).callSnsLikeApi(any());
-        verify(boardRepository).save(any(BoardEntity.class));
-        assert testBoard.getLikeCount() == 11;
+        verify(boardRepository).save(testBoard);
+        assertEquals(11, testBoard.getLikeCount());
     }
 }

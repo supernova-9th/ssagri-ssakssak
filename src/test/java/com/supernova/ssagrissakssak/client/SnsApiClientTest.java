@@ -32,35 +32,45 @@ class SnsApiClientTest {
 
     @Test
     void callSnsLikeApi_Success() {
+        // given
         ResponseEntity<String> mockResponse = new ResponseEntity<>(HttpStatus.OK);
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class))).thenReturn(mockResponse);
 
         SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, "test123");
+
+        // when
         SnsApiClient.SnsApiResponse response = snsApiClient.callSnsLikeApi(request);
 
+        // then
         assertTrue(response.isSuccess());
         verify(restTemplate, times(1)).postForEntity(anyString(), eq(null), eq(String.class));
     }
 
     @Test
     void callSnsLikeApi_Failure() {
+        // given
         ResponseEntity<String> mockResponse = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class))).thenReturn(mockResponse);
 
         SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, "test123");
+
+        // when
         SnsApiClient.SnsApiResponse response = snsApiClient.callSnsLikeApi(request);
 
+        // then
         assertFalse(response.isSuccess());
         verify(restTemplate, times(1)).postForEntity(anyString(), eq(null), eq(String.class));
     }
 
     @Test
     void callSnsLikeApi_ThrowsException() {
+        // given
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class)))
                 .thenThrow(new RestClientException("API call failed"));
 
         SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, "test123");
 
+        // when & then:
         assertThrows(SnsApiException.class, () -> snsApiClient.callSnsLikeApi(request));
         verify(restTemplate, times(1)).postForEntity(anyString(), eq(null), eq(String.class));
     }

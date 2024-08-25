@@ -2,6 +2,7 @@ package com.supernova.ssagrissakssak.client;
 
 import com.supernova.ssagrissakssak.core.enums.ContentType;
 import com.supernova.ssagrissakssak.core.exception.SnsApiException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -12,6 +13,7 @@ public class SnsApiClient {
 
     private final RestTemplate restTemplate;
 
+    @Autowired
     public SnsApiClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }

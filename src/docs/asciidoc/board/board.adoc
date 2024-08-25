@@ -1,0 +1,45 @@
+[[board-like-sns-api-failure]]
+=== 게시글 좋아요 API 접속
+
+==== Curl Request
+include::{snippets}/board-like-sns-api-failure/curl-request.adoc[]
+==== HTTP Response
+include::{snippets}/board-like-sns-api-failure/path-parameters.adoc[]
+==== Response body
+include::{snippets}/board-like-sns-api-failure/response-body.adoc[]
+==== Response Fields
+include::{snippets}/board-like-sns-api-failure/response-fields.adoc[]
+==== Response Fields
+include::{snippets}/board-like-not-found/response-fields.adoc[]
+
+
+[[board-like-not-found]]
+=== 게시글 좋아요 API 접속
+
+==== Curl Request
+include::{snippets}/board-like-not-found/curl-request.adoc[]
+==== HTTP Response
+include::{snippets}/board-like-not-found/path-parameters.adoc[]
+==== Response body
+include::{snippets}/board-like-not-found/response-body.adoc[]
+==== Response Fields
+include::{snippets}/board-like-not-found/response-fields.adoc[]
+==== Response Fields
+include::{snippets}/board-like-not-found/response-fields.adoc[]
+
+
+[[board-like-success]]
+=== 게시글 좋아요 API 접속
+
+==== Curl Request
+include::{snippets}/board-like-success/curl-request.adoc[]
+==== HTTP Response
+include::{snippets}/board-like-success/path-parameters.adoc[]
+==== Response body
+include::{snippets}/board-like-success/response-body.adoc[]
+==== Response Fields
+include::{snippets}/board-like-success/response-fields.adoc[]
+==== Response Fields
+include::{snippets}/board-like-success/response-fields.adoc[]
+
+
