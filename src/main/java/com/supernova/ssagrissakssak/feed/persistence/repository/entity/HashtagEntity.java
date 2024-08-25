@@ -21,11 +21,7 @@ public class HashtagEntity extends BaseEntity {
     @Column(name = "hashtag", nullable = false)
     private String hashtag;
 
-    @ManyToOne
-    @Column(name = "board_id", nullable = false)
-    private Long boardId;
-
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<BoardHashtag> boardHashtags;
+    private Set<BoardHashtagEntity> boardHashtags;
 
 }

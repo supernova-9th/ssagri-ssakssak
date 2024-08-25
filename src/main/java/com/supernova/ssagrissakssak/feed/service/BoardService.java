@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -22,14 +20,9 @@ public class BoardService {
         BoardEntity board = boardRepository.findById(id).orElseThrow(
                 () -> new SsagriException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND));
 
-        /* 해시태그 목록 추출 */
-        List<String> hashtags = board.getBoardHashtags().stream()
-                .map(boardHashtag -> boardHashtag.getHashtag().getHashtag())
-                .toList();
-
         /* 조회 수 증가 */
         board.viewCountUp();
 
-        return BoardDetailResponse.from(board, hashtags);
+        return BoardDetailResponse.from(board);
     }
 }
