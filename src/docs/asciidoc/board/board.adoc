@@ -1,5 +1,5 @@
 [[board-like-sns-api-failure]]
-=== 게시글 좋아요 API 접속
+=== 게시물 좋아요 API 접속
 
 ==== Curl Request
 include::{snippets}/board-like-sns-api-failure/curl-request.adoc[]
@@ -18,7 +18,7 @@ include::{snippets}/board-like-sns-api-failure/response-body.adoc[]
 
 
 [[board-like-not-found]]
-=== 게시글 좋아요 API 접속
+=== 게시물 좋아요 API 접속
 
 ==== Curl Request
 include::{snippets}/board-like-not-found/curl-request.adoc[]
@@ -36,7 +36,7 @@ include::{snippets}/board-like-not-found/response-body.adoc[]
 
 
 [[board-like-success]]
-=== 게시글 좋아요 성공
+=== 게시물 좋아요 성공
 
 ==== Curl Request
 include::{snippets}/board-like-success/curl-request.adoc[]
