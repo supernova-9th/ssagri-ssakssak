@@ -1,7 +1,7 @@
 package com.supernova.ssagrissakssak.feed.service;
 
+import com.supernova.ssagrissakssak.core.exception.BoardNotFoundException;
 import com.supernova.ssagrissakssak.core.exception.ErrorCode;
-import com.supernova.ssagrissakssak.core.exception.SsagriException;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardDetailResponse;
 import com.supernova.ssagrissakssak.feed.persistence.repository.BoardRepository;
 import com.supernova.ssagrissakssak.feed.persistence.repository.HashtagRepository;
@@ -24,7 +24,7 @@ public class BoardService {
     public BoardDetailResponse getBoard(Long id) {
 
         BoardEntity board = boardRepository.findById(id).orElseThrow(
-                () -> new SsagriException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND));
+                () -> new BoardNotFoundException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND));
 
         List<HashtagEntity> hashtags = hashtagRepository.findByBoardId(id);
 
