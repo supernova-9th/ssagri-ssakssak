@@ -1,0 +1,33 @@
+[[board-stats-date]]
+=== 게시물 통계 (DATE)
+
+==== Curl Request
+include::{snippets}/boards-stats-date/curl-request.adoc[]
+=== HTTP Header
+include::{snippets}/boards-stats-date/request-headers.adoc[]
+==== HTTP Request
+include::{snippets}/boards-stats-date/http-request.adoc[]
+==== Request Fields
+include::{snippets}/boards-stats-date/query-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/boards-stats-date/http-response.adoc[]
+==== Response Fields
+include::{snippets}/boards-stats-date/response-fields.adoc[]
+
+[[board-stats-hour]]
+=== 게시물 통계 (HOUR)
+
+==== Curl Request
+include::{snippets}/boards-stats-hour/curl-request.adoc[]
+=== HTTP Header
+include::{snippets}/boards-stats-date/request-headers.adoc[]
+==== HTTP Request
+include::{snippets}/boards-stats-hour/http-request.adoc[]
+==== Request Fields
+include::{snippets}/boards-stats-hour/query-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/boards-stats-hour/http-response.adoc[]
+==== Response Fields
+include::{snippets}/boards-stats-hour/response-fields.adoc[]
