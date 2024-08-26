@@ -1,6 +1,8 @@
 package com.supernova.ssagrissakssak.feed.persistence.repository.impl;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.DateTemplate;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.supernova.ssagrissakssak.core.enums.StatValueType;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 
 import static com.supernova.ssagrissakssak.feed.persistence.repository.entity.QBoardEntity.boardEntity;
@@ -23,42 +26,45 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     @Override
     public List<StatResponse> selectStatsByDate(String hashtag, LocalDate start, LocalDate end, StatValueType statValueType) {
-        NumberExpression<Integer> valueExpression = getValue(boardEntity, statValueType);
+        NumberExpression<Integer> count = getValue(boardEntity, statValueType);
+        DateTemplate<Date> date = Expressions.dateTemplate(Date.class, "DATE({0})", boardEntity.createdAt);
 
-        return queryFactory.select(Projections.bean(StatResponse.class
-                        , boardEntity.createdAt
-                        , valueExpression))
+        return queryFactory.select(Projections.constructor(StatResponse.class
+                        , date.as("createdAt")
+                        , count))
                 .from(boardEntity)
                 .join(hashtagEntity).on(boardEntity.id.eq(hashtagEntity.boardId))
                 .where(hashtagEntity.hashtag.eq(hashtag)
                         .and(boardEntity.createdAt.between(start.atStartOfDay(), end.atTime(LocalTime.MAX))))
-                .groupBy(boardEntity.createdAt)
+                .groupBy(date)
+                .orderBy(date.asc())
                 .fetch();
     }
 
     @Override
     public List<StatResponse> selectStatsByHour(String hashtag, LocalDate start, LocalDate end, StatValueType statValueType) {
-        NumberExpression<Integer> valueExpression = getValue(boardEntity, statValueType);
+        NumberExpression<Integer> count = getValue(boardEntity, statValueType);
+        DateTemplate<String> hour = Expressions.dateTemplate(String.class, "DATE_FORMAT({0}, '%Y-%m-%d %H:00:00')", boardEntity.createdAt);
 
-        return queryFactory.select(Projections.bean(StatResponse.class
-                        , boardEntity.createdAt
-                        , valueExpression))
+        return queryFactory.select(Projections.constructor(StatResponse.class
+                        , hour.as("createdAt")
+                        , count))
                 .from(boardEntity)
                 .join(hashtagEntity).on(boardEntity.id.eq(hashtagEntity.boardId))
                 .where(hashtagEntity.hashtag.eq(hashtag)
                         .and(boardEntity.createdAt.between(start.atStartOfDay(), end.atTime(LocalTime.MAX))))
-                .groupBy(boardEntity.createdAt.hour())
-                .orderBy(boardEntity.createdAt.asc())
+                .groupBy(hour)
+                .orderBy(hour.asc())
                 .fetch();
     }
 
     private NumberExpression<Integer> getValue(QBoardEntity board, StatValueType statValueType) {
         switch (statValueType) {
-            case StatValueType.VIEW:
+            case VIEW:
                 return board.viewCount.sum();
-            case StatValueType.LIKE:
+            case LIKE:
                 return board.likeCount.sum();
-            case StatValueType.SHARE:
+            case SHARE:
                 return board.shareCount.sum();
             default:
                 return board.id.count().intValue();

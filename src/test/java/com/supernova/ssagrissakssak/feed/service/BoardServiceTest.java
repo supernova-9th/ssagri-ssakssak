@@ -44,14 +44,14 @@ class BoardServiceTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getDateTime()).isEqualTo("2024-08-26");
+        assertThat(result.get(0).getCreatedAt()).isEqualTo("2024-08-26");
         assertThat(result.get(0).getCount()).isEqualTo(10);
     }
 
     @Test
     void StatType이_HOUR일_때_selectStatsByHour가_호출되어야_한다() {
         // given
-        String hashtag = "#food";
+        String hashtag = "food";
         StatType type = StatType.HOUR;
         LocalDate start = LocalDate.now().minusDays(7);
         LocalDate end = LocalDate.now();
@@ -66,7 +66,7 @@ class BoardServiceTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getDateTime()).isEqualTo("2024-08-26T12:00");
+        assertThat(result.get(0).getCreatedAt()).isEqualTo("2024-08-26T12:00");
         assertThat(result.get(0).getCount()).isEqualTo(5);
     }
 }

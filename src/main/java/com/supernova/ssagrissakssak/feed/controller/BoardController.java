@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.supernova.ssagrissakssak.core.constants.CommonConstant.HEADER_AUTHORIZE_TOKEN;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/boards")
