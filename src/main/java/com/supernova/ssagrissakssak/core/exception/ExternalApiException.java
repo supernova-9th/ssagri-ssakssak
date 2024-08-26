@@ -8,8 +8,9 @@ public class ExternalApiException extends SsagriException  {
     super(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.EXTERNAL_API_ERROR, "SNS API 호출 중 오류 발생: " + message);
   }
 
-  public ExternalApiException(String message, Throwable cause) {
-    super(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.EXTERNAL_API_ERROR, "SNS API 호출 중 오류 발생: " + message);
+  public ExternalApiException(ErrorCode errorCode, Throwable cause) {
+    super(HttpStatus.INTERNAL_SERVER_ERROR, errorCode, errorCode.getDefaultMessage());
+    initCause(cause);
   }
 
 }
