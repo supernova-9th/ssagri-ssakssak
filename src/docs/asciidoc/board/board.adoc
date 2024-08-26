@@ -3,6 +3,8 @@
 
 ==== Curl Request
 include::{snippets}/boards-stats-date/curl-request.adoc[]
+=== HTTP Header
+include::{snippets}/boards-stats-date/request-headers.adoc[]
 ==== HTTP Request
 include::{snippets}/boards-stats-date/http-request.adoc[]
 ==== Request Fields
@@ -18,6 +20,8 @@ include::{snippets}/boards-stats-date/response-fields.adoc[]
 
 ==== Curl Request
 include::{snippets}/boards-stats-hour/curl-request.adoc[]
+=== HTTP Header
+include::{snippets}/boards-stats-date/request-headers.adoc[]
 ==== HTTP Request
 include::{snippets}/boards-stats-hour/http-request.adoc[]
 ==== Request Fields
