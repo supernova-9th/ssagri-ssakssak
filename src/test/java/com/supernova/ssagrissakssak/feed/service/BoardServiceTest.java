@@ -35,7 +35,7 @@ class BoardServiceTest {
     private BoardEntity savedBoard1;
 
     @BeforeEach
-    void setUp() {
+    void tearDown() {
         boardRepository.deleteAllInBatch();
         hashtagRepository.deleteAllInBatch();
     }
