@@ -2,12 +2,12 @@ package com.supernova.ssagrissakssak.feed.controller;
 
 import com.supernova.ssagrissakssak.core.wrapper.ResultResponse;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardDetailResponse;
+import com.supernova.ssagrissakssak.feed.controller.response.BoardResponse;
 import com.supernova.ssagrissakssak.feed.service.BoardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/boards")
@@ -20,5 +20,22 @@ public class BoardController {
     @GetMapping("/{id}")
     public ResultResponse<BoardDetailResponse> getBoard(@PathVariable Long id) {
         return new ResultResponse<>(boardService.getBoard(id));
+    }
+
+    @GetMapping("/boards")
+    public ResultResponse<List<BoardResponse>> getAllBoard(
+            @RequestParam(value = "hashtag", required = false) String hashtag,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "orderBy", defaultValue = "created_at") String orderBy,
+            @RequestParam(value = "searchBy", defaultValue = "title") String searchBy,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "pageCount", defaultValue = "10") Integer pageCount,
+            @RequestParam(value = "page", defaultValue = "0") Integer page
+    ) {
+        List<BoardResponse> boardList = boardService.getBoards(
+                hashtag, type, orderBy, searchBy, search, pageCount, page
+        );
+
+        return new ResultResponse<>(boardList);
     }
 }
