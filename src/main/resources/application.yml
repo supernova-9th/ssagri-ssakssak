@@ -8,7 +8,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ssagri?serverTimezone=UTC&characterEncoding=UTF-8
     username: supernova
-    password:
+    password: 1234
   jpa:
     hibernate:
       ddl-auto: none

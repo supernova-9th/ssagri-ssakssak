@@ -8,10 +8,11 @@ import java.util.Optional;
 public interface BoardRepository extends DefaultJpaRepository<BoardEntity, Long> {
 
     /**
-     * contentId로 BoardEntity를 찾는 메서드입니다.
+     * Id로 BoardEntity를 찾는 메서드입니다.
      *
-     * @param contentId 찾고자 하는 게시물의 contentId
+     * @param id 찾고자 하는 게시물의 Id
      * @return 찾은 BoardEntity. 없으면 null을 반환합니다.
      */
-    Optional<BoardEntity> findByContentId(String contentId);
+    Optional<BoardEntity> findById(Long id);
+
 }

@@ -17,9 +17,6 @@ public class BoardEntity extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "content_id", nullable = false)
-    private String contentId;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private ContentType type;

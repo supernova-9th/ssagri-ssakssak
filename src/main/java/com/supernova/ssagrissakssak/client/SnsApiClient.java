@@ -1,7 +1,7 @@
 package com.supernova.ssagrissakssak.client;
 
 import com.supernova.ssagrissakssak.core.enums.ContentType;
-import com.supernova.ssagrissakssak.core.exception.SnsApiException;
+import com.supernova.ssagrissakssak.core.exception.ExternalApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -23,19 +23,19 @@ public class SnsApiClient {
      */
     public static class SnsApiRequest {
         private final ContentType type;
-        private final String contentId;
+        private final Long id;
 
-        public SnsApiRequest(ContentType type, String contentId) {
+        public SnsApiRequest(ContentType type, Long id) {
             this.type = type;
-            this.contentId = contentId;
+            this.id = id;
         }
 
         public ContentType getType() {
             return type;
         }
 
-        public String getContentId() {
-            return contentId;
+        public Long getId() {
+            return id;
         }
     }
 
@@ -59,25 +59,26 @@ public class SnsApiClient {
      *
      * @param request API 요청 정보
      * @return API 호출 결과
-     * @throws SnsApiException API 호출 중 오류가 발생했을 때 발생합니다.
+     * @throws ExternalApiException API 호출 중 오류가 발생했을 때 발생합니다.
      */
     public SnsApiResponse callSnsLikeApi(SnsApiRequest request) {
-        String url = getSnsLikeUrl(request.type, request.contentId);
+        String url = getSnsLikeUrl(request.getType(), request.getId());
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
             return new SnsApiResponse(response.getStatusCode().is2xxSuccessful());
         } catch (RestClientException e) {
-            throw new SnsApiException("좋아요 API 호출 실패: " + e.getMessage(), e);
+            throw new ExternalApiException("좋아요 API 호출 실패: " + e.getMessage(), e);
         }
     }
 
-    private String getSnsLikeUrl(ContentType type, String contentId) {
+    private String getSnsLikeUrl(ContentType type, Long id) {
         return switch (type) {
-            case FACEBOOK -> "https://www.facebook.com/likes/" + contentId;
-            case TWITTER -> "https://www.twitter.com/likes/" + contentId;
-            case INSTAGRAM -> "https://www.instagram.com/likes/" + contentId;
-            case THREADS -> "https://www.threads.net/likes/" + contentId;
+            case FACEBOOK -> "https://www.facebook.com/likes/" + id.toString();
+            case TWITTER -> "https://www.twitter.com/likes/" + id.toString();
+            case INSTAGRAM -> "https://www.instagram.com/likes/" + id.toString();
+            case THREADS -> "https://www.threads.net/likes/" + id.toString();
             default -> throw new IllegalArgumentException("지원하지 않는 서비스 입니다.");
         };
     }
+
 }

@@ -1,7 +1,7 @@
 package com.supernova.ssagrissakssak.client;
 
 import com.supernova.ssagrissakssak.core.enums.ContentType;
-import com.supernova.ssagrissakssak.core.exception.SnsApiException;
+import com.supernova.ssagrissakssak.core.exception.ExternalApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +36,7 @@ class SnsApiClientTest {
         ResponseEntity<String> mockResponse = new ResponseEntity<>(HttpStatus.OK);
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class))).thenReturn(mockResponse);
 
-        SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, "test123");
+        SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, 123L);
 
         // when
         SnsApiClient.SnsApiResponse response = snsApiClient.callSnsLikeApi(request);
@@ -52,7 +52,7 @@ class SnsApiClientTest {
         ResponseEntity<String> mockResponse = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class))).thenReturn(mockResponse);
 
-        SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, "test123");
+        SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, 123L);
 
         // when
         SnsApiClient.SnsApiResponse response = snsApiClient.callSnsLikeApi(request);
@@ -68,10 +68,11 @@ class SnsApiClientTest {
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class)))
                 .thenThrow(new RestClientException("API call failed"));
 
-        SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, "test123");
+        SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, 123L);
 
         // when & then:
-        assertThrows(SnsApiException.class, () -> snsApiClient.callSnsLikeApi(request));
+        assertThrows(ExternalApiException.class, () -> snsApiClient.callSnsLikeApi(request));
         verify(restTemplate, times(1)).postForEntity(anyString(), eq(null), eq(String.class));
     }
+
 }
