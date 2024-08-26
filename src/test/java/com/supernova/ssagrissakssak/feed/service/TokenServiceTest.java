@@ -4,7 +4,6 @@ import com.supernova.ssagrissakssak.core.exception.ErrorCode;
 import com.supernova.ssagrissakssak.core.exception.JwtValidateException;
 import com.supernova.ssagrissakssak.core.exception.UserNotFoundException;
 import com.supernova.ssagrissakssak.core.security.JwtProvider;
-import com.supernova.ssagrissakssak.feed.controller.request.RefreshTokenRequest;
 import com.supernova.ssagrissakssak.feed.controller.response.TokenResponse;
 import com.supernova.ssagrissakssak.feed.persistence.repository.UserRepository;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.UserEntity;
@@ -39,7 +38,6 @@ class TokenServiceTest {
         // Given
         String refreshToken = "refreshToken";
         String email = "test@example.com";
-        RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(refreshToken);
 
         UserEntity userEntity = UserEntity.builder().email(email).build();
 
@@ -55,7 +53,7 @@ class TokenServiceTest {
         when(jwtProvider.createTokenResponse(email)).thenReturn(newTokenResponse);
 
         // Then
-        TokenResponse result = tokenService.reissue(refreshTokenRequest);
+        TokenResponse result = tokenService.reissue(refreshToken);
 
         assertEquals(newTokenResponse, result);
         verify(userRepository, times(1)).findByEmailAndActiveStatusAndRefreshToken(email, true, refreshToken);
@@ -68,15 +66,14 @@ class TokenServiceTest {
     @DisplayName("유효하지 않은 refresh token이면 JwtValidateException을 던진다.")
     public void reissueFailsWhenInvalidToken() {
         // Given
-        String invalidRefreshToken = "refreshToken";
-        RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(invalidRefreshToken);
+        String refreshToken = "refreshToken";
 
         // When
-        doThrow(new JwtValidateException(ErrorCode.INVALID_TOKEN)).when(jwtProvider).validateToken(invalidRefreshToken);
+        doThrow(new JwtValidateException(ErrorCode.INVALID_TOKEN)).when(jwtProvider).validateToken(refreshToken);
 
         // Then
-        assertThrows(JwtValidateException.class, () -> tokenService.reissue(refreshTokenRequest));
-        verify(jwtProvider, times(1)).validateToken(invalidRefreshToken);
+        assertThrows(JwtValidateException.class, () -> tokenService.reissue(refreshToken));
+        verify(jwtProvider, times(1)).validateToken(refreshToken);
         verify(userRepository, never()).findByEmailAndActiveStatusAndRefreshToken(anyString(), anyBoolean(), anyString());
         verify(jwtProvider, never()).getEmailFromToken(anyString());
         verify(jwtProvider, never()).createTokenResponse(anyString());
@@ -86,21 +83,20 @@ class TokenServiceTest {
     @DisplayName("사용자를 찾을 수 없을 때 토큰 재발급 실패한다.")
     public void reissueFailsWhenUserNotFound() {
         // Given
-        String validRefreshToken = "refreshToken";
+        String refreshToken = "refreshToken";
         String email = "test@example.com";
-        RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(validRefreshToken);
 
         // When
-        when(jwtProvider.validateToken(validRefreshToken)).thenReturn(true);
-        when(jwtProvider.getEmailFromToken(validRefreshToken)).thenReturn(email);
-        when(userRepository.findByEmailAndActiveStatusAndRefreshToken(email, true, validRefreshToken))
+        when(jwtProvider.validateToken(refreshToken)).thenReturn(true);
+        when(jwtProvider.getEmailFromToken(refreshToken)).thenReturn(email);
+        when(userRepository.findByEmailAndActiveStatusAndRefreshToken(email, true, refreshToken))
                 .thenReturn(Optional.empty());
 
         // Then
-        assertThrows(UserNotFoundException.class, () -> tokenService.reissue(refreshTokenRequest));
-        verify(jwtProvider, times(1)).validateToken(validRefreshToken);
-        verify(jwtProvider, times(1)).getEmailFromToken(validRefreshToken);
-        verify(userRepository, times(1)).findByEmailAndActiveStatusAndRefreshToken(email, true, validRefreshToken);
+        assertThrows(UserNotFoundException.class, () -> tokenService.reissue(refreshToken));
+        verify(jwtProvider, times(1)).validateToken(refreshToken);
+        verify(jwtProvider, times(1)).getEmailFromToken(refreshToken);
+        verify(userRepository, times(1)).findByEmailAndActiveStatusAndRefreshToken(email, true, refreshToken);
         verify(jwtProvider, never()).createTokenResponse(anyString());
     }
 
