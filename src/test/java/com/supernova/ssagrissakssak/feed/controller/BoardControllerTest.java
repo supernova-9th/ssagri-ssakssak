@@ -14,15 +14,10 @@ import com.supernova.ssagrissakssak.mockuser.MockUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -38,9 +33,9 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -118,14 +113,13 @@ class BoardControllerTest extends RestDocsSupport {
     @Test
     @MockUser
     void addLikeBoardContent_BoardNotFound() throws Exception {
-        String token = createMockJwtToken();
-        doThrow(new BoardNotFoundException(1L)).when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
+        doThrow(new BoardNotFoundException()).when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/like", 1L)
                         .header(AUTHORIZATION, BEARER_TOKEN))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("게시물을 찾을 수 없습니다."))
+                .andExpect(jsonPath("$.message").value("해당 자원을 찾을 수 없습니다."))
                 .andDo(document("board-like-not-found",
                         requestHeaders(
                                 headerWithName("Authorization").description("Bearer JWT token")
@@ -224,13 +218,13 @@ class BoardControllerTest extends RestDocsSupport {
     @Test
     @MockUser
     void shareBoardContent_BoardNotFound() throws Exception {
-        doThrow(new BoardNotFoundException(1L)).when(boardService).shareBoardContent(eq(1L), any(Long.class));
+        doThrow(new BoardNotFoundException()).when(boardService).shareBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/share", 1L)
                         .header(AUTHORIZATION, BEARER_TOKEN))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("게시물을 찾을 수 없습니다."))
+                .andExpect(jsonPath("$.message").value("해당 자원을 찾을 수 없습니다."))
                 .andDo(document("board-share-not-found",
                         requestHeaders(
                                 headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
