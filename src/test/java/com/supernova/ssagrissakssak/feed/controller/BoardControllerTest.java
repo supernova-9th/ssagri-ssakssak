@@ -24,11 +24,15 @@ import static org.hamcrest.Matchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -111,12 +115,13 @@ class BoardControllerTest extends RestDocsSupport {
 
         // Then
         mockMvc.perform(get("/boards/{id}", 1L)
-                        .header(AUTHORIZATION, BEARER_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .header(AUTHORIZATION, BEARER_TOKEN))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("board-getById",
-                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
                                         .description("응답 코드"),
@@ -168,12 +173,23 @@ class BoardControllerTest extends RestDocsSupport {
                         .param("search", "테스트")
                         .param("pageCount", "10")
                         .param("page", "0")
-                        .header(AUTHORIZATION, BEARER_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .header(AUTHORIZATION, BEARER_TOKEN))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("board-getAll",
                         preprocessResponse(),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
+                        queryParameters(
+                                parameterWithName("hashtag").description("해시태그"),
+                                parameterWithName("type").description("조회 타입(FACEBOOK, TWITTER, INSTAGRAM, THREADS)"),
+                                parameterWithName("searchBy").description("검색 기준"),
+                                parameterWithName("search").description("검색 값"),
+                                parameterWithName("orderBy").description("정렬 기준(created_at,updated_at,like_count,share_count,view_count)"),
+                                parameterWithName("pageCount").description("페이지당 게시물 갯수"),
+                                parameterWithName("page").description("조회하려는 페이지")
+                        ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
                                         .description("응답 코드"),
