@@ -22,7 +22,7 @@ public class BoardController {
         return new ResultResponse<>(boardService.getBoard(id));
     }
 
-    @GetMapping("/boards")
+    @GetMapping
     public ResultResponse<List<BoardResponse>> getAllBoard(
             @RequestParam(value = "hashtag", required = false) String hashtag,
             @RequestParam(value = "type", required = false) String type,
