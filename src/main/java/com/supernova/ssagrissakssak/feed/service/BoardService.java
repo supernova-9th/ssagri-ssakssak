@@ -24,7 +24,7 @@ public class BoardService {
      * * @throws SnsApiException SNS API 호출 중 오류가 발생했을 때 발생합니다.
      */
     @Transactional
-    public void addLikeBoardContent(Long id) {
+    public void addLikeBoardContent(Long id, Long userId) {
         BoardEntity board = boardRepository.findById(id)
                 .orElseThrow(() -> new BoardNotFoundException(id));
 
@@ -33,6 +33,19 @@ public class BoardService {
 
         if (response.isSuccess()) {
             board.incrementLikeCount();
+        }
+    }
+
+    @Transactional
+    public void shareBoardContent(Long id, Long userId) {
+        BoardEntity board = boardRepository.findById(id)
+                .orElseThrow(() -> new BoardNotFoundException(id));
+
+        SnsApiClient.SnsApiResponse response = snsApiClient.callSnsShareApi(
+                new SnsApiClient.SnsApiRequest(board.getType(), board.getId()));
+
+        if (response.isSuccess()) {
+            board.incrementShareCount();
         }
     }
 

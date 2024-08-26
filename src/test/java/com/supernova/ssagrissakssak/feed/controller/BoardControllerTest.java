@@ -12,8 +12,11 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -30,48 +33,52 @@ class BoardControllerTest extends RestDocsSupport {
     @MockBean
     private BoardService boardService;
 
+    private String createMockJwtToken() {
+        return "mock.jwt.token";
+    }
+
     @Test
     @MockUser
     void addLikeBoardContent_Success() throws Exception {
-        doNothing().when(boardService).addLikeBoardContent(1L);
+        doNothing().when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/like", 1L)
-                        .content("{\"userId\": 1}")  // 요청 본문 추가
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .header(AUTHORIZATION, BEARER_TOKEN))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(document("board-like-success",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
                         pathParameters(
                                 parameterWithName("id").description("좋아요 누른 게시물 ID")
-                        ),
-                        requestFields(  // 요청 본문 필드 문서화
-                                fieldWithPath("userId").description("좋아요를 누른 사용자 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("응답 상태 코드"),
                                 fieldWithPath("message").description("응답 메시지")
                         )
                 ));
+        verify(boardService).addLikeBoardContent(eq(1L), any(Long.class));
     }
 
     @Test
     @MockUser
     void addLikeBoardContent_BoardNotFound() throws Exception {
-        doThrow(new BoardNotFoundException(1L)).when(boardService).addLikeBoardContent(1L);
+        String token = createMockJwtToken();
+        doThrow(new BoardNotFoundException(1L)).when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/like", 1L)
-                        .content("{\"userId\": 1}")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .header(AUTHORIZATION, BEARER_TOKEN))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value("게시물을 찾을 수 없습니다."))
                 .andDo(document("board-like-not-found",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer JWT token")
+                        ),
                         pathParameters(
                                 parameterWithName("id").description("좋아요 누른 게시물 ID")
-                        ),
-                        requestFields(
-                                fieldWithPath("userId").description("좋아요를 누른 사용자 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("응답 상태 코드"),
@@ -83,20 +90,93 @@ class BoardControllerTest extends RestDocsSupport {
     @Test
     @MockUser
     void addLikeBoardContent_SnsApiFailure() throws Exception {
-        doThrow(new ExternalApiException("좋아요 API 호출 실패")).when(boardService).addLikeBoardContent(1L);
+        doThrow(new ExternalApiException("좋아요 API 호출 실패")).when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/like", 1L)
-                        .content("{\"userId\": 1}")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .header(AUTHORIZATION, BEARER_TOKEN))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.status").value(500))
                 .andExpect(jsonPath("$.message").value("외부 API 호출 중 오류가 발생했습니다."))
                 .andDo(document("board-like-sns-api-failure",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer JWT token")
+                        ),
                         pathParameters(
                                 parameterWithName("id").description("좋아요 누른 게시물 ID")
                         ),
-                        requestFields(
-                                fieldWithPath("userId").description("좋아요를 누른 사용자 ID")
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @MockUser
+    void shareBoardContent_Success() throws Exception {
+        doNothing().when(boardService).shareBoardContent(eq(1L), any(Long.class));
+
+        mockMvc.perform(post("/boards/{id}/share", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(document("board-share-success",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("공유할 게시물 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+
+        verify(boardService).shareBoardContent(eq(1L), any(Long.class));
+    }
+
+    @Test
+    @MockUser
+    void shareBoardContent_BoardNotFound() throws Exception {
+        doThrow(new BoardNotFoundException(1L)).when(boardService).shareBoardContent(eq(1L), any(Long.class));
+
+        mockMvc.perform(post("/boards/{id}/share", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("게시물을 찾을 수 없습니다."))
+                .andDo(document("board-share-not-found",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("공유할 게시물 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @MockUser
+    void shareBoardContent_SnsApiFailure() throws Exception {
+        doThrow(new ExternalApiException("공유 API 호출 실패")).when(boardService).shareBoardContent(eq(1L), any(Long.class));
+
+        mockMvc.perform(post("/boards/{id}/share", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.status").value(500))
+                .andExpect(jsonPath("$.message").value("외부 API 호출 중 오류가 발생했습니다."))
+                .andDo(document("board-share-sns-api-failure",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("공유할 게시물 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("응답 상태 코드"),

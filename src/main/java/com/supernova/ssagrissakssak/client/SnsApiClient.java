@@ -72,4 +72,14 @@ public class SnsApiClient {
         }
     }
 
+    public SnsApiResponse callSnsShareApi(SnsApiRequest request) {
+        String url = request.getType().getShareUrl(request.getId());
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
+            return new SnsApiResponse(response.getStatusCode().is2xxSuccessful());
+        } catch (RestClientException e) {
+            throw new ExternalApiException(ErrorCode.EXTERNAL_API_ERROR, e);
+        }
+    }
+
 }

@@ -75,4 +75,50 @@ class SnsApiClientTest {
         verify(restTemplate, times(1)).postForEntity(anyString(), eq(null), eq(String.class));
     }
 
+    //공유하기
+    @Test
+    void callSnsShareApi_Success() {
+        // given
+        ResponseEntity<String> mockResponse = new ResponseEntity<>(HttpStatus.OK);
+        when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class))).thenReturn(mockResponse);
+
+        SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, 123L);
+
+        // when
+        SnsApiClient.SnsApiResponse response = snsApiClient.callSnsShareApi(request);
+
+        // then
+        assertTrue(response.isSuccess());
+        verify(restTemplate, times(1)).postForEntity(anyString(), eq(null), eq(String.class));
+    }
+
+    @Test
+    void callSnsShareApi_Failure() {
+        // given
+        ResponseEntity<String> mockResponse = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class))).thenReturn(mockResponse);
+
+        SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, 123L);
+
+        // when
+        SnsApiClient.SnsApiResponse response = snsApiClient.callSnsShareApi(request);
+
+        // then
+        assertFalse(response.isSuccess());
+        verify(restTemplate, times(1)).postForEntity(anyString(), eq(null), eq(String.class));
+    }
+
+    @Test
+    void callSnsShareApi_ThrowsException() {
+        // given
+        when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class)))
+                .thenThrow(new RestClientException("API call failed"));
+
+        SnsApiClient.SnsApiRequest request = new SnsApiClient.SnsApiRequest(ContentType.FACEBOOK, 123L);
+
+        // when & then:
+        assertThrows(ExternalApiException.class, () -> snsApiClient.callSnsShareApi(request));
+        verify(restTemplate, times(1)).postForEntity(anyString(), eq(null), eq(String.class));
+    }
+
 }

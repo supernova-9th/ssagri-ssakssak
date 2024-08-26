@@ -35,12 +35,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BoardNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResultResponse<Void> handleBoardNotFoundException(BoardNotFoundException e, HttpServletRequest request) {
         log.error("Board not found exception occurred: {}", e.getMessage());
         return new ResultResponse<>(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(ExternalApiException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResultResponse<Void> handleSnsApiException(ExternalApiException e, HttpServletRequest request) {
         log.error("SNS API exception occurred: {}", e.getMessage());
         return new ResultResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

@@ -43,4 +43,8 @@ public class BoardEntity extends BaseEntity {
         this.likeCount++;
     }
 
+    public void incrementShareCount() {
+        this.shareCount++;
+    }
+
 }

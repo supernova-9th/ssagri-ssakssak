@@ -50,7 +50,7 @@ class BoardServiceTest {
         when(snsApiClient.callSnsLikeApi(any())).thenReturn(new SnsApiClient.SnsApiResponse(true));
 
         // when
-        boardService.addLikeBoardContent(testBoard.getId());
+        boardService.addLikeBoardContent(testBoard.getId(), 1L);
 
         // then
         verify(boardRepository).findById(testBoard.getId());
@@ -64,7 +64,7 @@ class BoardServiceTest {
         when(boardRepository.findById(testBoard.getId())).thenReturn(Optional.empty());
 
         // when & then
-        assertThrows(BoardNotFoundException.class, () -> boardService.addLikeBoardContent(testBoard.getId()));
+        assertThrows(BoardNotFoundException.class, () -> boardService.addLikeBoardContent(testBoard.getId(),1L));
         verify(boardRepository).findById(testBoard.getId());
         verifyNoInteractions(snsApiClient);
     }
@@ -76,12 +76,54 @@ class BoardServiceTest {
         when(snsApiClient.callSnsLikeApi(any())).thenReturn(new SnsApiClient.SnsApiResponse(false));
 
         // when
-        boardService.addLikeBoardContent(testBoard.getId());
+        boardService.addLikeBoardContent(testBoard.getId(), 1L);
 
         // then
         verify(boardRepository).findById(testBoard.getId());
         verify(snsApiClient).callSnsLikeApi(any());
         assertEquals(10, testBoard.getLikeCount());
+    }
+
+    //공유하기
+    @Test
+    void shareBoardContent_Success() {
+        // given
+        when(boardRepository.findById(testBoard.getId())).thenReturn(Optional.of(testBoard));
+        when(snsApiClient.callSnsShareApi(any())).thenReturn(new SnsApiClient.SnsApiResponse(true));
+
+        // when
+        boardService.shareBoardContent(testBoard.getId(), 1L);
+
+        // then
+        verify(boardRepository).findById(testBoard.getId());
+        verify(snsApiClient).callSnsShareApi(any());
+        assertEquals(1, testBoard.getShareCount());
+    }
+
+    @Test
+    void shareBoardContent_BoardNotFound() {
+        // given
+        when(boardRepository.findById(testBoard.getId())).thenReturn(Optional.empty());
+
+        // when & then
+        assertThrows(BoardNotFoundException.class, () -> boardService.shareBoardContent(testBoard.getId(), 1L));
+        verify(boardRepository).findById(testBoard.getId());
+        verifyNoInteractions(snsApiClient);
+    }
+
+    @Test
+    void shareBoardContent_SnsApiFailure() {
+        // given
+        when(boardRepository.findById(testBoard.getId())).thenReturn(Optional.of(testBoard));
+        when(snsApiClient.callSnsShareApi(any())).thenReturn(new SnsApiClient.SnsApiResponse(false));
+
+        // when
+        boardService.shareBoardContent(testBoard.getId(), 1L);
+
+        // then
+        verify(boardRepository).findById(testBoard.getId());
+        verify(snsApiClient).callSnsShareApi(any());
+        assertEquals(0, testBoard.getShareCount());
     }
 
 }

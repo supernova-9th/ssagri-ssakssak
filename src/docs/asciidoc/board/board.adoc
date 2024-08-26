@@ -8,12 +8,19 @@
 include::{snippets}/board-like-success/http-request.adoc[]
 ==== http-response
 include::{snippets}/board-like-success/http-response.adoc[]
-
-==== request-body
-include::{snippets}/board-like-success/request-body.adoc[]
 ==== response-body
 include::{snippets}/board-like-success/response-body.adoc[]
 
+
+== 게시물 공유하기 성공
+=== board-share-success
+
+==== http-request
+include::{snippets}/board-share-success/http-request.adoc[]
+==== http-response
+include::{snippets}/board-share-success/http-response.adoc[]
+==== response-body
+include::{snippets}/board-share-success/response-body.adoc[]
 
 
 == 실패 - SNS API 호출 실패
@@ -23,16 +30,6 @@ include::{snippets}/board-like-success/response-body.adoc[]
 include::{snippets}/board-like-sns-api-failure/http-request.adoc[]
 ==== http-response
 include::{snippets}/board-like-sns-api-failure/http-response.adoc[]
-
-==== request-body
-include::{snippets}/board-like-sns-api-failure/request-body.adoc[]
 ==== response-body
 include::{snippets}/board-like-sns-api-failure/response-body.adoc[]
 
-== 오류 코드
-[options="header", cols="3,7"]
-|===
-|상태 코드|설명
-|404|게시물을 찾을 수 없습니다.
-|500|외부 API 호출 중 오류가 발생했습니다.
-|===
