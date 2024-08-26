@@ -2,7 +2,6 @@ package com.supernova.ssagrissakssak.feed.controller;
 
 import com.supernova.ssagrissakssak.core.enums.StatType;
 import com.supernova.ssagrissakssak.core.enums.StatValueType;
-import com.supernova.ssagrissakssak.core.security.JwtProvider;
 import com.supernova.ssagrissakssak.core.security.LoginUser;
 import com.supernova.ssagrissakssak.core.wrapper.ResultResponse;
 import com.supernova.ssagrissakssak.feed.controller.response.StatResponse;
