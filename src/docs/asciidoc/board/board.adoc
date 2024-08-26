@@ -1,55 +1,38 @@
-[[board-like-sns-api-failure]]
-=== 게시물 좋아요 API 접속
+[[board-like]]
+== 게시물 좋아요 API
 
-==== Curl Request
-include::{snippets}/board-like-sns-api-failure/curl-request.adoc[]
-==== HTTP Request
-include::{snippets}/board-like-sns-api-failure/http-request.adoc[]
-==== Request body
-include::{snippets}/board-like-sns-api-failure/request-body.adoc[]
-
-==== HTTP Response
-include::{snippets}/board-like-sns-api-failure/path-parameters.adoc[]
-==== Response Fields
-include::{snippets}/board-like-not-found/response-fields.adoc[]
-==== Response body
-include::{snippets}/board-like-sns-api-failure/response-body.adoc[]
-
-
-
-[[board-like-not-found]]
-=== 게시물 좋아요 API 접속
-
-==== Curl Request
-include::{snippets}/board-like-not-found/curl-request.adoc[]
-==== HTTP Request
-include::{snippets}/board-like-not-found/http-request.adoc[]
-==== Request body
-include::{snippets}/board-like-not-found/request-body.adoc[]
-
-==== HTTP Response
-include::{snippets}/board-like-not-found/path-parameters.adoc[]
-==== Response Fields
-include::{snippets}/board-like-not-found/Response-fields.adoc[]
-==== Response body
-include::{snippets}/board-like-not-found/response-body.adoc[]
-
-
-[[board-like-success]]
 === 게시물 좋아요 성공
+=== board-like-success
 
-==== Curl Request
-include::{snippets}/board-like-success/curl-request.adoc[]
-==== HTTP Request
+==== http-request
 include::{snippets}/board-like-success/http-request.adoc[]
-==== Request body
-include::{snippets}/board-like-success/request-body.adoc[]
+==== http-response
+include::{snippets}/board-like-success/http-response.adoc[]
 
-==== HTTP Response
-include::{snippets}/board-like-success/path-parameters.adoc[]
-==== Response Fields
-include::{snippets}/board-like-success/Response-fields.adoc[]
-==== Response body
+==== request-body
+include::{snippets}/board-like-success/request-body.adoc[]
+==== response-body
 include::{snippets}/board-like-success/response-body.adoc[]
 
 
+
+== 실패 - SNS API 호출 실패
+=== board-like-sns-api-failure
+
+==== http-request
+include::{snippets}/board-like-sns-api-failure/http-request.adoc[]
+==== http-response
+include::{snippets}/board-like-sns-api-failure/http-response.adoc[]
+
+==== request-body
+include::{snippets}/board-like-sns-api-failure/request-body.adoc[]
+==== response-body
+include::{snippets}/board-like-sns-api-failure/response-body.adoc[]
+
+== 오류 코드
+[options="header", cols="3,7"]
+|===
+|상태 코드|설명
+|404|게시물을 찾을 수 없습니다.
+|500|외부 API 호출 중 오류가 발생했습니다.
+|===

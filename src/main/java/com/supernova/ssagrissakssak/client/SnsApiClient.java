@@ -1,6 +1,7 @@
 package com.supernova.ssagrissakssak.client;
 
 import com.supernova.ssagrissakssak.core.enums.ContentType;
+import com.supernova.ssagrissakssak.core.exception.ErrorCode;
 import com.supernova.ssagrissakssak.core.exception.ExternalApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -62,23 +63,13 @@ public class SnsApiClient {
      * @throws ExternalApiException API 호출 중 오류가 발생했을 때 발생합니다.
      */
     public SnsApiResponse callSnsLikeApi(SnsApiRequest request) {
-        String url = getSnsLikeUrl(request.getType(), request.getId());
+        String url = request.getType().getLikeUrl(request.getId());
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
             return new SnsApiResponse(response.getStatusCode().is2xxSuccessful());
         } catch (RestClientException e) {
-            throw new ExternalApiException("좋아요 API 호출 실패: " + e.getMessage(), e);
+            throw new ExternalApiException(ErrorCode.EXTERNAL_API_ERROR, e);
         }
-    }
-
-    private String getSnsLikeUrl(ContentType type, Long id) {
-        return switch (type) {
-            case FACEBOOK -> "https://www.facebook.com/likes/" + id.toString();
-            case TWITTER -> "https://www.twitter.com/likes/" + id.toString();
-            case INSTAGRAM -> "https://www.instagram.com/likes/" + id.toString();
-            case THREADS -> "https://www.threads.net/likes/" + id.toString();
-            default -> throw new IllegalArgumentException("지원하지 않는 서비스 입니다.");
-        };
     }
 
 }

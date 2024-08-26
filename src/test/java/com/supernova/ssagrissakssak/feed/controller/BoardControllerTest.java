@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -15,8 +16,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -36,13 +36,17 @@ class BoardControllerTest extends RestDocsSupport {
         doNothing().when(boardService).addLikeBoardContent(1L);
 
         mockMvc.perform(post("/boards/{id}/like", 1L)
-                        .with(csrf()))
+                        .content("{\"userId\": 1}")  // 요청 본문 추가
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.message").value("success"))
                 .andDo(document("board-like-success",
                         pathParameters(
                                 parameterWithName("id").description("좋아요 누른 게시물 ID")
+                        ),
+                        requestFields(  // 요청 본문 필드 문서화
+                                fieldWithPath("userId").description("좋아요를 누른 사용자 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("응답 상태 코드"),
@@ -57,13 +61,17 @@ class BoardControllerTest extends RestDocsSupport {
         doThrow(new BoardNotFoundException(1L)).when(boardService).addLikeBoardContent(1L);
 
         mockMvc.perform(post("/boards/{id}/like", 1L)
-                        .with(csrf()))
+                        .content("{\"userId\": 1}")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value("게시물을 찾을 수 없습니다."))
                 .andDo(document("board-like-not-found",
                         pathParameters(
                                 parameterWithName("id").description("좋아요 누른 게시물 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("좋아요를 누른 사용자 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("응답 상태 코드"),
@@ -78,13 +86,17 @@ class BoardControllerTest extends RestDocsSupport {
         doThrow(new ExternalApiException("좋아요 API 호출 실패")).when(boardService).addLikeBoardContent(1L);
 
         mockMvc.perform(post("/boards/{id}/like", 1L)
-                        .with(csrf()))
+                        .content("{\"userId\": 1}")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.status").value(500))
                 .andExpect(jsonPath("$.message").value("외부 API 호출 중 오류가 발생했습니다."))
                 .andDo(document("board-like-sns-api-failure",
                         pathParameters(
                                 parameterWithName("id").description("좋아요 누른 게시물 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("userId").description("좋아요를 누른 사용자 ID")
                         ),
                         responseFields(
                                 fieldWithPath("status").description("응답 상태 코드"),
