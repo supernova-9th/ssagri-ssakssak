@@ -15,6 +15,8 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -43,6 +45,7 @@ class BoardControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(get("/boards/stats")
+                        .header(AUTHORIZATION, BEARER_TOKEN)
                 .param("hashtag", "hashtag")
                 .param("type", StatisticsType.COUNT.toString())
                 .param("timeType", StatisticsTimeType.DATE.toString())
@@ -52,6 +55,9 @@ class BoardControllerTest extends RestDocsSupport {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("boards-stats-date",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
                         queryParameters(
                                 parameterWithName("hashtag").description("해시태그"),
                                 parameterWithName("type").description("조회 타입(COUNT, VIEW_COUNT, LIKE_COUNT, SHARE_COUNT)"),
@@ -88,6 +94,7 @@ class BoardControllerTest extends RestDocsSupport {
 
         // when & then
         mockMvc.perform(get("/boards/stats")
+                        .header(AUTHORIZATION, BEARER_TOKEN)
                         .param("hashtag", "hashtag")
                         .param("type", StatisticsType.COUNT.toString())
                         .param("timeType", StatisticsTimeType.HOUR.toString())
@@ -97,6 +104,9 @@ class BoardControllerTest extends RestDocsSupport {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("boards-stats-hour",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
                         queryParameters(
                                 parameterWithName("hashtag").description("해시태그"),
                                 parameterWithName("type").description("조회 타입(COUNT, VIEW_COUNT, LIKE_COUNT, SHARE_COUNT)"),
