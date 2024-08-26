@@ -1,3 +1,39 @@
+[[board-like]]
+== 게시물 좋아요 API
+
+=== 게시물 좋아요 성공
+=== board-like-success
+
+==== http-request
+include::{snippets}/board-like-success/http-request.adoc[]
+==== http-response
+include::{snippets}/board-like-success/http-response.adoc[]
+==== response-body
+include::{snippets}/board-like-success/response-body.adoc[]
+
+
+== 게시물 공유하기 성공
+=== board-share-success
+
+==== http-request
+include::{snippets}/board-share-success/http-request.adoc[]
+==== http-response
+include::{snippets}/board-share-success/http-response.adoc[]
+==== response-body
+include::{snippets}/board-share-success/response-body.adoc[]
+
+
+== 실패 - SNS API 호출 실패
+=== board-like-sns-api-failure
+
+==== http-request
+include::{snippets}/board-like-sns-api-failure/http-request.adoc[]
+==== http-response
+include::{snippets}/board-like-sns-api-failure/http-response.adoc[]
+==== response-body
+include::{snippets}/board-like-sns-api-failure/response-body.adoc[]
+
+=======
 [[board-getByid]]
 === 게시물 상세 조회
 

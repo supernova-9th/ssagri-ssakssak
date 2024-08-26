@@ -17,4 +17,10 @@ public class SsagriException extends RuntimeException {
         this.message = errorCode.getDefaultMessage();
     }
 
+    public SsagriException(HttpStatus httpStatus, ErrorCode errorCode, String message) {
+        super(errorCode.getDefaultMessage());
+        this.httpStatus = httpStatus;
+        this.message = errorCode.getDefaultMessage();
+    }
+
 }

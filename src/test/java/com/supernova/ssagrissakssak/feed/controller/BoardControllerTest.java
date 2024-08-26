@@ -3,6 +3,8 @@ package com.supernova.ssagrissakssak.feed.controller;
 import com.supernova.ssagrissakssak.core.enums.ContentType;
 import com.supernova.ssagrissakssak.core.enums.StatisticsTimeType;
 import com.supernova.ssagrissakssak.core.enums.StatisticsType;
+import com.supernova.ssagrissakssak.core.exception.BoardNotFoundException;
+import com.supernova.ssagrissakssak.core.exception.ExternalApiException;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardDetailResponse;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.HashtagEntity;
 import com.supernova.ssagrissakssak.feed.persistence.repository.model.StatisticsDto;
@@ -12,11 +14,14 @@ import com.supernova.ssagrissakssak.mockuser.MockUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -24,19 +29,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BoardController.class)
@@ -44,12 +51,12 @@ class BoardControllerTest extends RestDocsSupport {
 
     @MockBean
     private BoardService boardService;
-
+  
     @MockBean
     private BoardStatisticsService boardStatisticsService;
 
     private BoardDetailResponse dto1;
-
+  
     @BeforeEach
     void setUp() {
 
@@ -84,6 +91,80 @@ class BoardControllerTest extends RestDocsSupport {
     }
 
     @Test
+    @MockUser
+    void addLikeBoardContent_Success() throws Exception {
+        doNothing().when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
+
+        mockMvc.perform(post("/boards/{id}/like", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(document("board-like-success",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("좋아요 누른 게시물 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+        verify(boardService).addLikeBoardContent(eq(1L), any(Long.class));
+    }
+
+    @Test
+    @MockUser
+    void addLikeBoardContent_BoardNotFound() throws Exception {
+        String token = createMockJwtToken();
+        doThrow(new BoardNotFoundException(1L)).when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
+
+        mockMvc.perform(post("/boards/{id}/like", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("게시물을 찾을 수 없습니다."))
+                .andDo(document("board-like-not-found",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer JWT token")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("좋아요 누른 게시물 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @MockUser
+    void addLikeBoardContent_SnsApiFailure() throws Exception {
+        doThrow(new ExternalApiException("좋아요 API 호출 실패")).when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
+
+        mockMvc.perform(post("/boards/{id}/like", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.status").value(500))
+                .andExpect(jsonPath("$.message").value("외부 API 호출 중 오류가 발생했습니다."))
+                .andDo(document("board-like-sns-api-failure",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer JWT token")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("좋아요 누른 게시물 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                          )
+                                ));
+    }
+
+    @Test
     @DisplayName("게시물 상세조회 API")
     @MockUser
     void 게시물_상세조회_하면_성공한다() throws Exception {
@@ -115,6 +196,79 @@ class BoardControllerTest extends RestDocsSupport {
     }
 
     @Test
+    @MockUser
+    void shareBoardContent_Success() throws Exception {
+        doNothing().when(boardService).shareBoardContent(eq(1L), any(Long.class));
+
+        mockMvc.perform(post("/boards/{id}/share", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("success"))
+                .andDo(document("board-share-success",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("공유할 게시물 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+
+        verify(boardService).shareBoardContent(eq(1L), any(Long.class));
+    }
+
+    @Test
+    @MockUser
+    void shareBoardContent_BoardNotFound() throws Exception {
+        doThrow(new BoardNotFoundException(1L)).when(boardService).shareBoardContent(eq(1L), any(Long.class));
+
+        mockMvc.perform(post("/boards/{id}/share", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("게시물을 찾을 수 없습니다."))
+                .andDo(document("board-share-not-found",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("공유할 게시물 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @MockUser
+    void shareBoardContent_SnsApiFailure() throws Exception {
+        doThrow(new ExternalApiException("공유 API 호출 실패")).when(boardService).shareBoardContent(eq(1L), any(Long.class));
+
+        mockMvc.perform(post("/boards/{id}/share", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.status").value(500))
+                .andExpect(jsonPath("$.message").value("외부 API 호출 중 오류가 발생했습니다."))
+                .andDo(document("board-share-sns-api-failure",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("공유할 게시물 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+    }
+
     @DisplayName("통계 API(DATE)")
     void getBoardStats() throws Exception {
         given(boardStatisticsService.getStatistics(any(), any(), any(), any(), any())).willReturn(
@@ -157,6 +311,7 @@ class BoardControllerTest extends RestDocsSupport {
     @Test
     @DisplayName("통계 API(HOUR)")
     void getBoardStats2() throws Exception {
+        // given
         given(boardStatisticsService.getStatistics(any(), any(), any(), any(), any())).willReturn(
                 List.of(
                         new StatisticsDto(LocalDateTime.of(2024, 8, 24, 1, 0, 0), 3L),
@@ -165,13 +320,15 @@ class BoardControllerTest extends RestDocsSupport {
                 )
         );
 
+        // when & then
         mockMvc.perform(get("/boards/stats")
                         .header(AUTHORIZATION, BEARER_TOKEN)
                         .param("hashtag", "hashtag")
                         .param("type", StatisticsType.COUNT.toString())
                         .param("timeType", StatisticsTimeType.HOUR.toString())
                         .param("start", "2024-08-24")
-                        .param("end", "2024-08-25"))
+                        .param("end", "2024-08-25")
+                )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("boards-stats-hour",
@@ -186,6 +343,17 @@ class BoardControllerTest extends RestDocsSupport {
                                 parameterWithName("end").description("조회 마지막 날짜")
                         ),
                         responseFields(
-                                fieldWithPath("status").type(JsonFieldType.NUMBER).description("응답 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과"),
-                                fieldWithPath("result").type(JsonField
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("결과"),
+                                fieldWithPath("result").type(JsonFieldType.ARRAY)
+                                        .description("응답 데이터"),
+                                fieldWithPath("result[].time").type(JsonFieldType.STRING)
+                                        .description("날짜"),
+                                fieldWithPath("result[].value").type(JsonFieldType.NUMBER)
+                                        .description("조회 타입 결과")
+                        )
+                ));
+    }
+}

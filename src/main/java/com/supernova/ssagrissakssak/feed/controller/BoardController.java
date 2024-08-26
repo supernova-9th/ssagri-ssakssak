@@ -9,10 +9,7 @@ import com.supernova.ssagrissakssak.feed.service.BoardService;
 import com.supernova.ssagrissakssak.feed.service.BoardStatisticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +20,24 @@ public class BoardController {
 
     private final BoardService boardService;
     private final BoardStatisticsService boardStatisticsService;
+
+    /**
+     * 게시물에 좋아요를 추가하는 메서드입니다.
+     *
+     * @param id 좋아요를 추가할 게시물의 ID
+     * @return 작업 결과를 담은 ResultResponse 객체
+     */
+    @PostMapping("/{id}/like")
+    public ResultResponse<Void> addLikeBoardContent(@PathVariable Long id, @AuthenticationPrincipal LoginUser loginUser) {
+        boardService.addLikeBoardContent(id, loginUser.getId());
+        return new ResultResponse<>();
+    }
+
+    @PostMapping("/{id}/share")
+    public ResultResponse<Void> addShareBoardContent(@PathVariable Long id, @AuthenticationPrincipal LoginUser loginUser) {
+        boardService.shareBoardContent(id, loginUser.getId());
+        return new ResultResponse<>();
+    }
 
     /* 게시물 상세 조회 */
     @GetMapping("/{id}")
@@ -40,4 +55,5 @@ public class BoardController {
 
         return new ResultResponse<>(result);
     }
+
 }
