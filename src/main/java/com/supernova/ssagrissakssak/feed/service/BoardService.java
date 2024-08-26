@@ -28,6 +28,8 @@ public class BoardService {
 
         List<HashtagEntity> hashtags = hashtagRepository.findAllByBoardId(id);
 
+        board.viewCountUp();
+
         return BoardDetailResponse.of(board, hashtags);
     }
 }

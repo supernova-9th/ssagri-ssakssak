@@ -36,4 +36,8 @@ public class BoardEntity extends BaseEntity {
     @Column(name = "share_count", nullable = false)
     private int shareCount;
 
+    public void viewCountUp() {
+        this.viewCount += 1;
+    }
+
 }
