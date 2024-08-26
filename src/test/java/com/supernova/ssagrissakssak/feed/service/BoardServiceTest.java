@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -153,4 +154,5 @@ class BoardServiceTest {
         assertNotEquals(board1.getContent().length(), result.get(0).getContent().length());
         assertTrue(result.get(0).getContent().length() <= 20);
     }
+
 }
