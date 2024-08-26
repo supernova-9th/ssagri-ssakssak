@@ -47,4 +47,8 @@ public class BoardEntity extends BaseEntity {
         this.shareCount++;
     }
 
+    public void viewCountUp() {
+        this.viewCount += 1;
+    }
+
 }

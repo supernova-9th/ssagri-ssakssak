@@ -12,4 +12,6 @@ public interface UserRepository extends DefaultJpaRepository<UserEntity, Long> {
     Boolean existsByEmail(String email);
 
     Optional<UserEntity> findByEmailAndActiveStatus(String email, boolean isActive);
+
+    Optional<UserEntity> findByEmailAndActiveStatusAndRefreshToken(String email, boolean activeStatus, String refreshToken);
 }

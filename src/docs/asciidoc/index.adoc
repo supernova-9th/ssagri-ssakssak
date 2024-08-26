@@ -16,3 +16,7 @@ include::user/user.adoc[]
 [[Board-API]]
 == Board API
 include::board/board.adoc[]
+
+[[Token-API]]
+== Token API
+include::token/token.adoc[]
