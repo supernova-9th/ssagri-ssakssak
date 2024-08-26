@@ -5,10 +5,17 @@
 include::{snippets}/token-reissue/curl-request.adoc[]
 ==== HTTP Request
 include::{snippets}/token-reissue/http-request.adoc[]
-==== Request Fields
-include::{snippets}/token-reissue/request-fields.adoc[]
+==== HTTPie Request
+include::{snippets}/token-reissue/httpie-request.adoc[]
+
+==== Request Headers
+include::{snippets}/token-reissue/request-headers.adoc[]
+==== Request Body
+include::{snippets}/token-reissue/request-body.adoc[]
 
 ==== HTTP Response
 include::{snippets}/token-reissue/http-response.adoc[]
+==== Response Body
+include::{snippets}/token-reissue/response-body.adoc[]
 ==== Response Fields
 include::{snippets}/token-reissue/response-fields.adoc[]
