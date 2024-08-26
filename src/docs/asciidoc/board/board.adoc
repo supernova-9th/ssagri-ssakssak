@@ -1,0 +1,97 @@
+[[board-getByid]]
+=== 게시물 상세 조회
+
+==== Curl Request
+include::{snippets}/board-getById/curl-request.adoc[]
+==== HTTP Request
+include::{snippets}/board-getById/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/board-getById/http-response.adoc[]
+==== Response Fields
+include::{snippets}/board-getById/response-fields.adoc[]
+
+
+[[board-getAll]]
+=== 게시물 목록 조회
+==== Curl Request
+include::{snippets}/board-getAll/curl-request.adoc[]
+==== HTTP Request
+include::{snippets}/board-getAll/http-request.adoc[]
+
+==== Query Parameters
+include::{snippets}/board-getAll/query-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/board-getAll/http-response.adoc[]
+==== Response Fields
+include::{snippets}/board-getAll/response-fields.adoc[]
+
+[[board-like]]
+== 게시물 좋아요 API
+
+=== 게시물 좋아요 성공
+=== board-like-success
+
+==== http-request
+include::{snippets}/board-like-success/http-request.adoc[]
+==== http-response
+include::{snippets}/board-like-success/http-response.adoc[]
+==== response-body
+include::{snippets}/board-like-success/response-body.adoc[]
+
+
+== 게시물 공유하기 성공
+=== board-share-success
+
+==== http-request
+include::{snippets}/board-share-success/http-request.adoc[]
+==== http-response
+include::{snippets}/board-share-success/http-response.adoc[]
+==== response-body
+include::{snippets}/board-share-success/response-body.adoc[]
+
+
+== 실패 - SNS API 호출 실패
+=== board-like-sns-api-failure
+
+==== http-request
+include::{snippets}/board-like-sns-api-failure/http-request.adoc[]
+==== http-response
+include::{snippets}/board-like-sns-api-failure/http-response.adoc[]
+==== response-body
+include::{snippets}/board-like-sns-api-failure/response-body.adoc[]
+
+[[board-stats-date]]
+=== 게시물 통계 (DATE)
+
+==== Curl Request
+include::{snippets}/boards-stats-date/curl-request.adoc[]
+==== HTTP Header
+include::{snippets}/boards-stats-date/request-headers.adoc[]
+==== HTTP Request
+include::{snippets}/boards-stats-date/http-request.adoc[]
+==== Request Fields
+include::{snippets}/boards-stats-date/query-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/boards-stats-date/http-response.adoc[]
+==== Response Fields
+include::{snippets}/boards-stats-date/response-fields.adoc[]
+
+[[board-stats-hour]]
+=== 게시물 통계 (HOUR)
+
+==== Curl Request
+include::{snippets}/boards-stats-hour/curl-request.adoc[]
+==== HTTP Header
+include::{snippets}/boards-stats-date/request-headers.adoc[]
+==== HTTP Request
+include::{snippets}/boards-stats-hour/http-request.adoc[]
+==== Request Fields
+include::{snippets}/boards-stats-hour/query-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/boards-stats-hour/http-response.adoc[]
+==== Response Fields
+include::{snippets}/boards-stats-hour/response-fields.adoc[]

@@ -1,0 +1,12 @@
+[[token-reissue]]
+=== 토큰 재발급
+
+==== Curl Request
+include::{snippets}/token-reissue/curl-request.adoc[]
+==== HTTP Request
+include::{snippets}/token-reissue/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/token-reissue/http-response.adoc[]
+==== Response Fields
+include::{snippets}/token-reissue/response-fields.adoc[]
