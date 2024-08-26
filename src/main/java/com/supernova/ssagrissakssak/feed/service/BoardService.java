@@ -33,7 +33,7 @@ public class BoardService {
     @Transactional
     public void addLikeBoardContent(Long id, Long userId) {
         BoardEntity board = boardRepository.findById(id)
-                .orElseThrow(() -> new BoardNotFoundException(id));
+                .orElseThrow(BoardNotFoundException::new);
 
         SnsApiClient.SnsApiResponse response = snsApiClient.callSnsLikeApi(
                 new SnsApiClient.SnsApiRequest(board.getType(), board.getId()));
@@ -46,7 +46,7 @@ public class BoardService {
     @Transactional
     public void shareBoardContent(Long id, Long userId) {
         BoardEntity board = boardRepository.findById(id)
-                .orElseThrow(() -> new BoardNotFoundException(id));
+                .orElseThrow(BoardNotFoundException::new);
 
         SnsApiClient.SnsApiResponse response = snsApiClient.callSnsShareApi(
                 new SnsApiClient.SnsApiRequest(board.getType(), board.getId()));
