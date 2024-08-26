@@ -18,7 +18,6 @@ public abstract class RestDocsSupport {
 
     protected MockMvc mockMvc;
     protected ObjectMapper objectMapper = new ObjectMapper();
-
     public static final String AUTHORIZATION = "Authorization";
     public static final String BEARER_TOKEN = "Bearer Token";
     public static final String ACCESS_TOKEN = "Access Token";

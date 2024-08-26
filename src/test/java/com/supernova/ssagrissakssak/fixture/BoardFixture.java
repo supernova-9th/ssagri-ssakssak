@@ -26,4 +26,26 @@ public class BoardFixture {
                 .shareCount(shareCount)
                 .build();
     }
+
+    public static BoardEntity get(ContentType contentType, int viewCount, int likeCount, int shareCount) {
+        return BoardEntity.builder()
+                .type(contentType)
+                .title("Test")
+                .content("Content")
+                .viewCount(viewCount)
+                .likeCount(likeCount)
+                .shareCount(shareCount)
+                .build();
+    }
+
+    public static BoardEntity get(String title, String content, int viewCount, int likeCount, int shareCount) {
+        return BoardEntity.builder()
+                .type(ContentType.FACEBOOK)
+                .title(title)
+                .content(content)
+                .viewCount(viewCount)
+                .likeCount(likeCount)
+                .shareCount(shareCount)
+                .build();
+    }
 }

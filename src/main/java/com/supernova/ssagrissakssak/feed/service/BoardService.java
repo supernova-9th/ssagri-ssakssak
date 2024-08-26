@@ -4,6 +4,7 @@ import com.supernova.ssagrissakssak.client.SnsApiClient;
 import com.supernova.ssagrissakssak.core.exception.BoardNotFoundException;
 import com.supernova.ssagrissakssak.core.exception.ErrorCode;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardDetailResponse;
+import com.supernova.ssagrissakssak.feed.controller.response.BoardResponse;
 import com.supernova.ssagrissakssak.feed.persistence.repository.BoardRepository;
 import com.supernova.ssagrissakssak.feed.persistence.repository.HashtagRepository;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.BoardEntity;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +69,16 @@ public class BoardService {
         board.viewCountUp();
 
         return BoardDetailResponse.of(board, hashtags);
+    }
+
+    public List<BoardResponse> getBoards(String hashtag, String type, String orderBy, String searchBy,
+                                         String search, Integer pageCount, Integer page) {
+
+        List<BoardEntity> boards = boardRepository.getBoards(hashtag, type, orderBy, searchBy, search, pageCount, page);
+
+        return boards.stream()
+                .map(BoardResponse::of)
+                .collect(Collectors.toList());
     }
 
 }
