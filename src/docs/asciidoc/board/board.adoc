@@ -62,26 +62,12 @@ include::{snippets}/board-like-sns-api-failure/http-response.adoc[]
 ==== response-body
 include::{snippets}/board-like-sns-api-failure/response-body.adoc[]
 
-=======
-[[board-getByid]]
-=== 게시물 상세 조회
-
-==== Curl Request
-include::{snippets}/board-getById/curl-request.adoc[]
-==== HTTP Request
-include::{snippets}/board-getById/http-request.adoc[]
-
-==== HTTP Response
-include::{snippets}/board-getById/http-response.adoc[]
-==== Response Fields
-include::{snippets}/board-getById/response-fields.adoc[]
-
 [[board-stats-date]]
 === 게시물 통계 (DATE)
 
 ==== Curl Request
 include::{snippets}/boards-stats-date/curl-request.adoc[]
-=== HTTP Header
+==== HTTP Header
 include::{snippets}/boards-stats-date/request-headers.adoc[]
 ==== HTTP Request
 include::{snippets}/boards-stats-date/http-request.adoc[]
@@ -98,7 +84,7 @@ include::{snippets}/boards-stats-date/response-fields.adoc[]
 
 ==== Curl Request
 include::{snippets}/boards-stats-hour/curl-request.adoc[]
-=== HTTP Header
+==== HTTP Header
 include::{snippets}/boards-stats-date/request-headers.adoc[]
 ==== HTTP Request
 include::{snippets}/boards-stats-hour/http-request.adoc[]
