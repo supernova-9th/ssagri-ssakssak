@@ -12,3 +12,7 @@ endif::[]
 [[User-API]]
 == User API
 include::user/user.adoc[]
+
+[[Token-API]]
+== Token API
+include::token/token.adoc[]
