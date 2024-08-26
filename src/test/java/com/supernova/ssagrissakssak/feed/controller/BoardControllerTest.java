@@ -81,6 +81,7 @@ class BoardControllerTest extends RestDocsSupport {
 
         // Then
         mockMvc.perform(get("/boards/{id}", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())

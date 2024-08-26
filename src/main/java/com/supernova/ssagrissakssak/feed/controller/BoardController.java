@@ -1,9 +1,11 @@
 package com.supernova.ssagrissakssak.feed.controller;
 
+import com.supernova.ssagrissakssak.core.security.LoginUser;
 import com.supernova.ssagrissakssak.core.wrapper.ResultResponse;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardDetailResponse;
 import com.supernova.ssagrissakssak.feed.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +20,7 @@ public class BoardController {
 
     /* 게시물 상세 조회 */
     @GetMapping("/{id}")
-    public ResultResponse<BoardDetailResponse> getBoard(@PathVariable Long id) {
+    public ResultResponse<BoardDetailResponse> getBoard(@AuthenticationPrincipal LoginUser loginUser, @PathVariable Long id) {
         return new ResultResponse<>(boardService.getBoard(id));
     }
 }
