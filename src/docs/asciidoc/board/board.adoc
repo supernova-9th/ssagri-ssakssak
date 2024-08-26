@@ -10,3 +10,15 @@ include::{snippets}/board-getById/http-request.adoc[]
 include::{snippets}/board-getById/http-response.adoc[]
 ==== Response Fields
 include::{snippets}/board-getById/response-fields.adoc[]
+
+[[board-getAll]]
+=== 게시물 목록 조회
+==== Curl Request
+include::{snippets}/board-getAll/curl-request.adoc[]
+==== HTTP Request
+include::{snippets}/board-getAll/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/board-getAll/http-response.adoc[]
+==== Response Fields
+include::{snippets}/board-getAll/response-fields.adoc[]

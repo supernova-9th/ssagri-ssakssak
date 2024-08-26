@@ -1,11 +1,10 @@
 package com.supernova.ssagrissakssak.feed.persistence.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.supernova.ssagrissakssak.core.enums.ContentType;
-import com.supernova.ssagrissakssak.feed.controller.response.BoardResponse;
 import com.supernova.ssagrissakssak.feed.persistence.repository.custom.BoardRepositoryCustom;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.BoardEntity;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.QBoardEntity;
@@ -47,6 +46,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .from(board)
                 .join(hashtagEntity).on(board.id.eq(hashtagEntity.boardId))
                 .where(conditions)
+                .orderBy(getOrderSpecifier(orderBy, board))
+                .limit(pageCount)
+                .offset((page > 0 ? (page - 1) : 0) * pageCount)
                 .fetch();
     }
 
@@ -71,4 +73,16 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         return null;
     }
 
+    private OrderSpecifier<?> getOrderSpecifier(String orderBy, QBoardEntity board) {
+        if ("created_at".equalsIgnoreCase(orderBy)) {
+            return board.createdAt.desc();
+        } else if ("updated_at".equalsIgnoreCase(orderBy)) {
+            return board.updatedAt.desc();
+        } else if ("view_count".equalsIgnoreCase(orderBy)) {
+            return board.viewCount.desc();
+        } else if ("like_count".equalsIgnoreCase(orderBy)) {
+            return board.likeCount.desc();
+        }
+        return board.createdAt.desc();
+    }
 }

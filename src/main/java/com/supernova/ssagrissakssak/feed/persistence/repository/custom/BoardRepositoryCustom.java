@@ -1,6 +1,5 @@
 package com.supernova.ssagrissakssak.feed.persistence.repository.custom;
 
-import com.supernova.ssagrissakssak.feed.controller.response.BoardResponse;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.BoardEntity;
 
 import java.util.List;
