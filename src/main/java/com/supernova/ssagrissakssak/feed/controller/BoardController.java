@@ -20,7 +20,7 @@ public class BoardController {
 
     /* 게시물 상세 조회 */
     @GetMapping("/{id}")
-    public ResultResponse<BoardDetailResponse> getBoard(@AuthenticationPrincipal LoginUser loginUser, @PathVariable Long id) {
+    public ResultResponse<BoardDetailResponse> getBoard(@PathVariable Long id) {
         return new ResultResponse<>(boardService.getBoard(id));
     }
 }
