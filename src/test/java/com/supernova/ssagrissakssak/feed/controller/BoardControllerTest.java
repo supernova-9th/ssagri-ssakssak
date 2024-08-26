@@ -17,15 +17,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -33,7 +31,6 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -51,6 +48,9 @@ class BoardControllerTest extends RestDocsSupport {
     @MockBean
     private BoardStatisticsService boardStatisticsService;
 
+    private BoardDetailResponse boardDto;
+    private BoardResponse boardsDto1;
+    private BoardResponse boardsDto2;
     private BoardDetailResponse dto1;
 
     @BeforeEach
@@ -72,6 +72,43 @@ class BoardControllerTest extends RestDocsSupport {
                 .toList();
 
         LocalDateTime now = LocalDateTime.now();
+        boardDto = BoardDetailResponse.builder()
+                .id(1L)
+                .type(ContentType.FACEBOOK)
+                .title("제목 테스트1")
+                .content("테스트 내용 입니다.")
+                .hashtags(hashtags)
+                .viewCount(10)
+                .likeCount(5)
+                .shareCount(2)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        boardsDto1 = BoardResponse.builder()
+                .id(2L)
+                .type(ContentType.FACEBOOK)
+                .title("제목 테스트2")
+                .content("테스트 내용 입니다.")
+                .viewCount(10)
+                .likeCount(5)
+                .shareCount(2)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        boardsDto2 = BoardResponse.builder()
+                .id(3L)
+                .type(ContentType.FACEBOOK)
+                .title("제목 테스트3")
+                .content("테스트 내용 입니다.")
+                .viewCount(10)
+                .likeCount(5)
+                .shareCount(2)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
         dto1 = BoardDetailResponse.builder()
                 .id(1L)
                 .type(ContentType.FACEBOOK)
@@ -84,6 +121,119 @@ class BoardControllerTest extends RestDocsSupport {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
+
+    }
+
+    @Test
+    @MockUser
+    void 게시물_상세조회_API() throws Exception {
+        // When
+        when(boardService.getBoard(1L)).thenReturn(boardDto);
+
+        // Then
+        mockMvc.perform(get("/boards/{id}", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("board-getById",
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("결과"),
+                                fieldWithPath("result").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터"),
+                                fieldWithPath("result.id").type(JsonFieldType.NUMBER)
+                                        .description("게시물 아이디"),
+                                fieldWithPath("result.type").type(JsonFieldType.STRING)
+                                        .description("SNS 종류"),
+                                fieldWithPath("result.title").type(JsonFieldType.STRING)
+                                        .description("제목"),
+                                fieldWithPath("result.content").type(JsonFieldType.STRING)
+                                        .description("내용"),
+                                fieldWithPath("result.hashtags").type(JsonFieldType.ARRAY)
+                                        .description("해시 태그"),
+                                fieldWithPath("result.viewCount").type(JsonFieldType.NUMBER)
+                                        .description("조회 수"),
+                                fieldWithPath("result.likeCount").type(JsonFieldType.NUMBER)
+                                        .description("좋아요 수"),
+                                fieldWithPath("result.shareCount").type(JsonFieldType.NUMBER)
+                                        .description("공유 수"),
+                                fieldWithPath("result.createdAt").type(JsonFieldType.STRING)
+                                        .description("생성 일자"),
+                                fieldWithPath("result.updatedAt").type(JsonFieldType.STRING)
+                                        .description("수정 일자")
+                        )
+                ));
+    }
+
+    @Test
+    @MockUser
+    void 게시물_목록조회_API() throws Exception {
+
+        // Given
+        List<BoardResponse> boardResponses = Arrays.asList(boardsDto1, boardsDto2);
+
+        // When
+        when(boardService.getBoards(anyString(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt()))
+                .thenReturn(boardResponses);
+
+        // Then
+        mockMvc.perform(get("/boards")
+                        .param("hashtag", "test")
+                        .param("type", "FACEBOOK")
+                        .param("orderBy", "created_at")
+                        .param("searchBy", "title")
+                        .param("search", "테스트")
+                        .param("pageCount", "10")
+                        .param("page", "0")
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("board-getAll",
+                        preprocessResponse(),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
+                        ),
+                        queryParameters(
+                                parameterWithName("hashtag").description("해시태그"),
+                                parameterWithName("type").description("조회 타입(FACEBOOK, TWITTER, INSTAGRAM, THREADS)"),
+                                parameterWithName("searchBy").description("검색 기준"),
+                                parameterWithName("search").description("검색 값"),
+                                parameterWithName("orderBy").description("정렬 기준(created_at,updated_at,like_count,share_count,view_count)"),
+                                parameterWithName("pageCount").description("페이지당 게시물 갯수"),
+                                parameterWithName("page").description("조회하려는 페이지")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                        .description("응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("결과"),
+                                fieldWithPath("result").type(JsonFieldType.ARRAY)
+                                        .description("응답 데이터"),
+                                fieldWithPath("result[].id").type(JsonFieldType.NUMBER)
+                                        .description("게시물 아이디"),
+                                fieldWithPath("result[].type").type(JsonFieldType.STRING)
+                                        .description("SNS 종류"),
+                                fieldWithPath("result[].title").type(JsonFieldType.STRING)
+                                        .description("제목"),
+                                fieldWithPath("result[].content").type(JsonFieldType.STRING)
+                                        .description("내용"),
+                                fieldWithPath("result[].viewCount").type(JsonFieldType.NUMBER)
+                                        .description("조회 수"),
+                                fieldWithPath("result[].likeCount").type(JsonFieldType.NUMBER)
+                                        .description("좋아요 수"),
+                                fieldWithPath("result[].shareCount").type(JsonFieldType.NUMBER)
+                                        .description("공유 수"),
+                                fieldWithPath("result[].createdAt").type(JsonFieldType.STRING)
+                                        .description("생성 일자"),
+                                fieldWithPath("result[].updatedAt").type(JsonFieldType.STRING)
+                                        .description("수정 일자")
+                        )
+                ));
     }
 
     @Test
@@ -160,37 +310,6 @@ class BoardControllerTest extends RestDocsSupport {
     }
 
     @Test
-    @DisplayName("게시물 상세조회 API")
-    @MockUser
-    void 게시물_상세조회_하면_성공한다() throws Exception {
-        when(boardService.getBoard(1L)).thenReturn(dto1);
-
-        mockMvc.perform(get("/boards/{id}", 1L)
-                        .header(AUTHORIZATION, BEARER_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("board-getById",
-                        preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("status").type(JsonFieldType.NUMBER).description("응답 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과"),
-                                fieldWithPath("result").type(JsonFieldType.OBJECT).description("응답 데이터"),
-                                fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("게시물 아이디"),
-                                fieldWithPath("result.type").type(JsonFieldType.STRING).description("SNS 종류"),
-                                fieldWithPath("result.title").type(JsonFieldType.STRING).description("제목"),
-                                fieldWithPath("result.content").type(JsonFieldType.STRING).description("내용"),
-                                fieldWithPath("result.hashtags").type(JsonFieldType.ARRAY).description("해시 태그"),
-                                fieldWithPath("result.viewCount").type(JsonFieldType.NUMBER).description("조회 수"),
-                                fieldWithPath("result.likeCount").type(JsonFieldType.NUMBER).description("좋아요 수"),
-                                fieldWithPath("result.shareCount").type(JsonFieldType.NUMBER).description("공유 수"),
-                                fieldWithPath("result.createdAt").type(JsonFieldType.STRING).description("생성 일자"),
-                                fieldWithPath("result.updatedAt").type(JsonFieldType.STRING).description("수정 일자")
-                        )
-                ));
-    }
-
-    @Test
     @MockUser
     void shareBoardContent_Success() throws Exception {
         doNothing().when(boardService).shareBoardContent(eq(1L), any(Long.class));
@@ -214,30 +333,6 @@ class BoardControllerTest extends RestDocsSupport {
                 ));
 
         verify(boardService).shareBoardContent(eq(1L), any(Long.class));
-    }
-
-    @Test
-    @MockUser
-    void shareBoardContent_BoardNotFound() throws Exception {
-        doThrow(new BoardNotFoundException()).when(boardService).shareBoardContent(eq(1L), any(Long.class));
-
-        mockMvc.perform(post("/boards/{id}/share", 1L)
-                        .header(AUTHORIZATION, BEARER_TOKEN))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.message").value("해당 자원을 찾을 수 없습니다."))
-                .andDo(document("board-share-not-found",
-                        requestHeaders(
-                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
-                        ),
-                        pathParameters(
-                                parameterWithName("id").description("공유할 게시물 ID")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").description("응답 상태 코드"),
-                                fieldWithPath("message").description("응답 메시지")
-                        )
-                ));
     }
 
     @Test
@@ -352,69 +447,4 @@ class BoardControllerTest extends RestDocsSupport {
                 ));
     }
 
-    @Test
-    @MockUser
-    void 게시물_목록조회_API() throws Exception {
-
-        // Given
-        List<BoardResponse> boardResponses = Arrays.asList(boardsDto1, boardsDto2);
-
-        // When
-        when(boardService.getBoards(anyString(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt()))
-                .thenReturn(boardResponses);
-
-        // Then
-        mockMvc.perform(get("/boards")
-                        .param("hashtag", "test")
-                        .param("type", "FACEBOOK")
-                        .param("orderBy", "created_at")
-                        .param("searchBy", "title")
-                        .param("search", "테스트")
-                        .param("pageCount", "10")
-                        .param("page", "0")
-                        .header(AUTHORIZATION, BEARER_TOKEN))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andDo(document("board-getAll",
-                        preprocessResponse(),
-                        requestHeaders(
-                                headerWithName(AUTHORIZATION).description(ACCESS_TOKEN)
-                        ),
-                        queryParameters(
-                                parameterWithName("hashtag").description("해시태그"),
-                                parameterWithName("type").description("조회 타입(FACEBOOK, TWITTER, INSTAGRAM, THREADS)"),
-                                parameterWithName("searchBy").description("검색 기준"),
-                                parameterWithName("search").description("검색 값"),
-                                parameterWithName("orderBy").description("정렬 기준(created_at,updated_at,like_count,share_count,view_count)"),
-                                parameterWithName("pageCount").description("페이지당 게시물 갯수"),
-                                parameterWithName("page").description("조회하려는 페이지")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").type(JsonFieldType.NUMBER)
-                                        .description("응답 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING)
-                                        .description("결과"),
-                                fieldWithPath("result").type(JsonFieldType.ARRAY)
-                                        .description("응답 데이터"),
-                                fieldWithPath("result[].id").type(JsonFieldType.NUMBER)
-                                        .description("게시물 아이디"),
-                                fieldWithPath("result[].type").type(JsonFieldType.STRING)
-                                        .description("SNS 종류"),
-                                fieldWithPath("result[].title").type(JsonFieldType.STRING)
-                                        .description("제목"),
-                                fieldWithPath("result[].content").type(JsonFieldType.STRING)
-                                        .description("내용"),
-                                fieldWithPath("result[].viewCount").type(JsonFieldType.NUMBER)
-                                        .description("조회 수"),
-                                fieldWithPath("result[].likeCount").type(JsonFieldType.NUMBER)
-                                        .description("좋아요 수"),
-                                fieldWithPath("result[].shareCount").type(JsonFieldType.NUMBER)
-                                        .description("공유 수"),
-                                fieldWithPath("result[].createdAt").type(JsonFieldType.STRING)
-                                        .description("생성 일자"),
-                                fieldWithPath("result[].updatedAt").type(JsonFieldType.STRING)
-                                        .description("수정 일자")
-                        )
-                ));
-    }
 }

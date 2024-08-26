@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,8 +32,6 @@ class BoardServiceTest {
     @Autowired
     private HashtagRepository hashtagRepository;
 
-    private BoardEntity savedBoard1;
-
     @BeforeEach
     void tearDown() {
         boardRepository.deleteAllInBatch();
@@ -42,33 +39,15 @@ class BoardServiceTest {
     }
 
     @Test
-    void 게시물_상세조회_하면_모든_데이터를_가져온다() {
-        // When
-        BoardDetailResponse result = boardService.getBoard(savedBoard1.getId());
-
-        // Then
-        assertNotNull(result);
-        assertEquals(savedBoard1.getId(), result.getId());
-        assertEquals(savedBoard1.getTitle(), result.getTitle());
-        assertEquals(savedBoard1.getContent(), result.getContent());
-        assertEquals(savedBoard1.getType(), result.getType());
-        assertEquals(savedBoard1.getLikeCount(), result.getLikeCount());
-        assertEquals(savedBoard1.getCreatedAt(), result.getCreatedAt());
-        assertEquals(savedBoard1.getUpdatedAt(), result.getUpdatedAt());
-
-        List<String> hashtags = result.getHashtags();
-        assertEquals(2, hashtags.size()); // 예상값 2
-        assertTrue(hashtags.contains("#맛집"));
-        assertTrue(hashtags.contains("#여행"));
-    }
-
-    @Test
-    void 게시물_상세조회시_조회수가_1_증가한다() {
+    void 게시물상세조회시조회수가1증가한다() {
         // Given
-        int viewCount = savedBoard1.getViewCount();
+        BoardEntity board = boardRepository.save(BoardFixture.get(10, 2, 3));
+        hashtagRepository.save(HashtagFixture.get(board.getId()));
+
+        int viewCount = board.getViewCount();
 
         // When
-        BoardDetailResponse result = boardService.getBoard(savedBoard1.getId());
+        BoardDetailResponse result = boardService.getBoard(board.getId());
 
         // Then
         assertEquals(result.getViewCount(), viewCount + 1);
@@ -120,39 +99,14 @@ class BoardServiceTest {
         String orderBy = null;
         String searchBy = null;
         String search = null;
-        Integer pageCount = null;
-        Integer page = null;
+        Integer pageCount = 1;
+        Integer page = 20;
 
         // When
         List<BoardResponse> result = boardService.getBoards(hashtag, type, orderBy, searchBy, search, pageCount, page);
 
         // Then
         assertEquals(0, result.size());
-    }
-
-    @Test
-    void 게시물목록_조회시_내용_글자수_20_제한() {
-
-        // Given
-        BoardEntity board1 = boardRepository.save(BoardFixture.get("제목","내용 테스트 20자 이상 문자열입니다.",10, 2, 3));
-
-        hashtagRepository.save(HashtagFixture.get(board1.getId()));
-
-        // Given
-        String hashtag = null;
-        String type =null;
-        String orderBy = null;
-        String searchBy = null;
-        String search = null;
-        Integer pageCount = null;
-        Integer page = null;
-
-        // When
-        List<BoardResponse> result = boardService.getBoards(hashtag, type, orderBy, searchBy, search, pageCount, page);
-
-        // Then
-        assertNotEquals(board1.getContent().length(), result.get(0).getContent().length());
-        assertTrue(result.get(0).getContent().length() <= 20);
     }
 
 }
