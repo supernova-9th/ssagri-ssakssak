@@ -24,7 +24,7 @@ import static com.supernova.ssagrissakssak.core.constants.UserConstant.ASIA_SEOU
 public class JwtProvider {
     private static final String EMAIL = "email";
     private static final String AUTHORIZATION = "Authorization";
-    private static final String TOKEN_PREFIX = "Bearer";
+    private static final String TOKEN_PREFIX = "Bearer ";
 
     @Value("${security.jwt.secret}")
     private String secretString;
