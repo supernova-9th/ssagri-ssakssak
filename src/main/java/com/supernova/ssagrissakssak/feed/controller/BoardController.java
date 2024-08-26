@@ -20,12 +20,12 @@ public class BoardController {
 
     /* 게시물 상세 조회 */
     @GetMapping("/{id}")
-    public ResultResponse<BoardDetailResponse> getBoard(@PathVariable Long id, @AuthenticationPrincipal LoginUser loginUser) {
+    public ResultResponse<BoardDetailResponse> getBoard(@PathVariable Long id) {
         return new ResultResponse<>(boardService.getBoard(id));
     }
 
     @GetMapping
-    public ResultResponse<List<BoardResponse>> getAllBoard(@AuthenticationPrincipal LoginUser loginUser,
+    public ResultResponse<List<BoardResponse>> getAllBoard(
             @RequestParam(value = "hashtag", required = false) String hashtag,
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "orderBy", defaultValue = "created_at") String orderBy,
