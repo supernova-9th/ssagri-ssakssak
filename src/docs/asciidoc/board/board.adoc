@@ -1,0 +1,18 @@
+[[board-stats]]
+=== 통계 조회
+
+==== Curl Request
+include::{snippets}/board-stats/curl-request.adoc[]
+==== HTTP Request
+include::{snippets}/board-stats/http-request.adoc[]
+==== HTTPie Request
+include::{snippets}/board-stats/httpie-request.adoc[]
+
+==== Request Body
+include::{snippets}/board-stats/request-body.adoc[]
+==== HTTP Response
+include::{snippets}/board-stats/http-response.adoc[]
+==== Response Body
+include::{snippets}/board-stats/response-body.adoc[]
+==== Response Fields
+include::{snippets}/board-stats/response-fields.adoc[]
