@@ -26,7 +26,7 @@ public class BoardService {
         BoardEntity board = boardRepository.findById(id).orElseThrow(
                 () -> new SsagriException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND));
 
-        List<HashtagEntity> hashtags = hashtagRepository.findAllByBoardId(id);
+        List<HashtagEntity> hashtags = hashtagRepository.findByBoardId(id);
 
         board.viewCountUp();
 

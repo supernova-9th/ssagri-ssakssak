@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface HashtagRepository extends DefaultJpaRepository<HashtagEntity, Long> {
 
-    List<HashtagEntity> findAllByBoardId(Long boardId);
+    List<HashtagEntity> findByBoardId(Long boardId);
 
 }
