@@ -39,7 +39,7 @@ class BoardServiceTest {
     }
 
     @Test
-    void 게시물상세조회시조회수가1증가한다() {
+    void 게시물_상세조회시_조회수가_1_증가한다() {
         // Given
         BoardEntity board = boardRepository.save(BoardFixture.get(10, 2, 3));
         hashtagRepository.save(HashtagFixture.get(board.getId()));
