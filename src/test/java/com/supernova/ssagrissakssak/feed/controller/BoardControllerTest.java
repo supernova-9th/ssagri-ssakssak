@@ -238,11 +238,12 @@ class BoardControllerTest extends RestDocsSupport {
 
     @Test
     @MockUser
-    void addLikeBoardContent_Success() throws Exception {
+    void 게시물_좋아요_성공한다() throws Exception {
         doNothing().when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/like", 1L)
                         .header(AUTHORIZATION, BEARER_TOKEN))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.message").value("success"))
@@ -263,11 +264,12 @@ class BoardControllerTest extends RestDocsSupport {
 
     @Test
     @MockUser
-    void addLikeBoardContent_BoardNotFound() throws Exception {
+    void 좋아요한_게시물을_찾을수없다() throws Exception {
         doThrow(new BoardNotFoundException()).when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/like", 1L)
                         .header(AUTHORIZATION, BEARER_TOKEN))
+                .andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
                 .andExpect(jsonPath("$.message").value("해당 자원을 찾을 수 없습니다."))
@@ -287,11 +289,12 @@ class BoardControllerTest extends RestDocsSupport {
 
     @Test
     @MockUser
-    void addLikeBoardContent_SnsApiFailure() throws Exception {
+    void 게시물_좋아요_API호출_실패한다() throws Exception {
         doThrow(new ExternalApiException("좋아요 API 호출 실패")).when(boardService).addLikeBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/like", 1L)
                         .header(AUTHORIZATION, BEARER_TOKEN))
+                .andDo(print())
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.status").value(500))
                 .andExpect(jsonPath("$.message").value("외부 API 호출 중 오류가 발생했습니다."))
@@ -311,11 +314,12 @@ class BoardControllerTest extends RestDocsSupport {
 
     @Test
     @MockUser
-    void shareBoardContent_Success() throws Exception {
+    void 계시물_공유하기_성공한다() throws Exception {
         doNothing().when(boardService).shareBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/share", 1L)
                         .header(AUTHORIZATION, BEARER_TOKEN))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.message").value("success"))
@@ -337,11 +341,37 @@ class BoardControllerTest extends RestDocsSupport {
 
     @Test
     @MockUser
-    void shareBoardContent_SnsApiFailure() throws Exception {
+    void 공유한_게시물을_찾을수없다() throws Exception {
+        doThrow(new BoardNotFoundException()).when(boardService).shareBoardContent(eq(1L), any(Long.class));
+
+        mockMvc.perform(post("/boards/{id}/share", 1L)
+                        .header(AUTHORIZATION, BEARER_TOKEN))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("해당 자원을 찾을 수 없습니다."))
+                .andDo(document("board-share-not-found",
+                        requestHeaders(
+                                headerWithName("Authorization").description("Bearer JWT token")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("좋아요 누른 게시물 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").description("응답 상태 코드"),
+                                fieldWithPath("message").description("응답 메시지")
+                        )
+                ));
+    }
+
+    @Test
+    @MockUser
+    void 게시물_공유하기_API호출_실패한다() throws Exception {
         doThrow(new ExternalApiException("공유 API 호출 실패")).when(boardService).shareBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/share", 1L)
                         .header(AUTHORIZATION, BEARER_TOKEN))
+                .andDo(print())
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.status").value(500))
                 .andExpect(jsonPath("$.message").value("외부 API 호출 중 오류가 발생했습니다."))
