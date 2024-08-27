@@ -314,7 +314,7 @@ class BoardControllerTest extends RestDocsSupport {
 
     @Test
     @MockUser
-    void 계시물_공유하기_성공한다() throws Exception {
+    void 계시물_공유_성공한다() throws Exception {
         doNothing().when(boardService).shareBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/share", 1L)
@@ -366,7 +366,7 @@ class BoardControllerTest extends RestDocsSupport {
 
     @Test
     @MockUser
-    void 게시물_공유하기_API호출_실패한다() throws Exception {
+    void 게시물_공유_API호출_실패한다() throws Exception {
         doThrow(new ExternalApiException("공유 API 호출 실패")).when(boardService).shareBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/share", 1L)
