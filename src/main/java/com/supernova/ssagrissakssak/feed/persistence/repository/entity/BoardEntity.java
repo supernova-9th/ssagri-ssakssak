@@ -37,12 +37,15 @@ public class BoardEntity extends BaseEntity {
     private int shareCount;
 
     /**
-     * 게시물의 좋아요 수를 1 증가시킵니다.
+     * 게시물 좋아요 수를 1 증가시킵니다.
      */
     public void incrementLikeCount() {
         this.likeCount++;
     }
 
+    /**
+     * 게시물 공유하기 수를 1 증가시킵니다.
+     */
     public void incrementShareCount() {
         this.shareCount++;
     }
