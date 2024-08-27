@@ -314,7 +314,7 @@ class BoardControllerTest extends RestDocsSupport {
 
     @Test
     @MockUser
-    void 계시물_공유_성공한다() throws Exception {
+    void 게시물_공유_성공한다() throws Exception {
         doNothing().when(boardService).shareBoardContent(eq(1L), any(Long.class));
 
         mockMvc.perform(post("/boards/{id}/share", 1L)
