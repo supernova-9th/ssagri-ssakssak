@@ -6,13 +6,17 @@ import com.supernova.ssagrissakssak.feed.persistence.repository.entity.BoardEnti
 
 import java.util.Optional;
 
+/**
+ * 게시물 엔티티에 대한 데이터 액세스를 담당하는 리포지토리 인터페이스입니다.
+ * 이 인터페이스는 JPA 기본 기능과 커스텀 쿼리 기능을 모두 제공합니다.
+ */
 public interface BoardRepository extends DefaultJpaRepository<BoardEntity, Long>, BoardRepositoryCustom {
 
     /**
-     * Id로 BoardEntity를 찾는 메서드입니다.
+     * 주어진 ID에 해당하는 게시물 조회
      *
-     * @param id 찾고자 하는 게시물의 Id
-     * @return 찾은 BoardEntity. 없으면 null을 반환합니다.
+     * @param id 조회할 게시물의 ID
+     * @return 조회된 게시물을 Optional로 감싸서 반환. 게시물이 없는 경우 빈 Optional 반환
      */
     Optional<BoardEntity> findById(Long id);
 }
