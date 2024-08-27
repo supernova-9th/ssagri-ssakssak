@@ -84,7 +84,6 @@ class BoardMockServiceTest {
         assertEquals(10, testBoard.getLikeCount());
     }
 
-    //공유하기
     @Test
     void shareBoardContent_Success() {
         // given
