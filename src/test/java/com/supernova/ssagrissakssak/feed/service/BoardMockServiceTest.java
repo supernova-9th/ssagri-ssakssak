@@ -44,7 +44,7 @@ class BoardMockServiceTest {
     }
 
     @Test
-    void addLikeBoardContent_Success() {
+    void 게시물_좋아요_성공한다() {
         // given
         when(boardRepository.findById(testBoard.getId())).thenReturn(Optional.of(testBoard));
         when(snsApiClient.callSnsLikeApi(any())).thenReturn(new SnsApiClient.SnsApiResponse(true));
@@ -59,7 +59,7 @@ class BoardMockServiceTest {
     }
 
     @Test
-    void addLikeBoardContent_BoardNotFound() {
+    void 좋아요한_게시물을_찾을수없다() {
         // given
         when(boardRepository.findById(testBoard.getId())).thenReturn(Optional.empty());
 
@@ -70,7 +70,7 @@ class BoardMockServiceTest {
     }
 
     @Test
-    void addLikeBoardContent_SnsApiFailure() {
+    void 게시물_좋아요_API호출_실패한다() {
         // given
         when(boardRepository.findById(testBoard.getId())).thenReturn(Optional.of(testBoard));
         when(snsApiClient.callSnsLikeApi(any())).thenReturn(new SnsApiClient.SnsApiResponse(false));
@@ -85,7 +85,7 @@ class BoardMockServiceTest {
     }
 
     @Test
-    void shareBoardContent_Success() {
+    void 게시물_공유_성공한다() {
         // given
         when(boardRepository.findById(testBoard.getId())).thenReturn(Optional.of(testBoard));
         when(snsApiClient.callSnsShareApi(any())).thenReturn(new SnsApiClient.SnsApiResponse(true));
@@ -100,7 +100,7 @@ class BoardMockServiceTest {
     }
 
     @Test
-    void shareBoardContent_BoardNotFound() {
+    void 공유한_게시물을_찾을수없다() {
         // given
         when(boardRepository.findById(testBoard.getId())).thenReturn(Optional.empty());
 
@@ -111,7 +111,7 @@ class BoardMockServiceTest {
     }
 
     @Test
-    void shareBoardContent_SnsApiFailure() {
+    void 게시물_공유_API호출_실패한다() {
         // given
         when(boardRepository.findById(testBoard.getId())).thenReturn(Optional.of(testBoard));
         when(snsApiClient.callSnsShareApi(any())).thenReturn(new SnsApiClient.SnsApiResponse(false));
