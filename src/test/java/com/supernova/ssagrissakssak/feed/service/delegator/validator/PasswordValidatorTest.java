@@ -48,16 +48,14 @@ class PasswordValidatorTest {
     }
 
     @Test
-    @DisplayName("비밀번호가 일치하지 않으면 InvalidPasswordException을 던진다.")
-    void testValidateThrowsInvalidPasswordException() {
+    void 비밀번호가_일치하지_않으면_InvalidPasswordException을_던진다() {
         assertThrows(InvalidPasswordException.class, () -> {
             passwordValidator.validate(user, approveModel);
         });
     }
 
     @Test
-    @DisplayName("비밀번호가 일치하면 예외가 발생하지 않는다.")
-    void testValidateDoesNotThrowException() {
+    void 비밀번호가_일치하면_예외가_발생하지_않는다() {
         String email = "test@example.com";
         String password = "password";
         String authenticationCode = "ABC123";

@@ -18,9 +18,7 @@ class ActiveStatusValidatorTest {
         activeStatusValidator = new ActiveStatusValidator();
     }
 
-    @Test
-    @DisplayName("사용자가 이미 활성화되어 있으면 UserRegistrationException을 던진다.")
-    void testValidateThrowsUserRegistrationException() {
+    @Test void 사용자가_이미_활성화되어_있으면_UserRegistrationException을_던진다() {
         // given
         String email = "test@example.com";
         String encodedPassword = "encodedPassword";
@@ -41,8 +39,7 @@ class ActiveStatusValidatorTest {
     }
 
     @Test
-    @DisplayName("사용자가 활성화되지 않은 경우 예외가 발생하지 않는다.")
-    void testValidateDoesNotThrowException() {
+    void 사용자가_활성화되지_않은_경우_예외가_발생하지_않는다() {
         // given
         String email = "test@example.com";
         String password = "encodedPassword";

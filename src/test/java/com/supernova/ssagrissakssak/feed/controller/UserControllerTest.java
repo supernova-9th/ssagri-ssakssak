@@ -28,8 +28,7 @@ class UserControllerTest extends RestDocsSupport {
     UserService userService;
 
     @Test
-    @DisplayName("회원가입 테스트")
-    void join() throws Exception {
+    void 회원가입_테스트() throws Exception {
         // given
         var request = new UserCreateRequest("test@email.com", "password123");
         given(userService.join(any())).willReturn(1L);

@@ -33,8 +33,7 @@ class TokenServiceTest {
     private TokenService tokenService;
 
     @Test
-    @DisplayName("토큰을 재발급한다.")
-    public void reissue() {
+    public void 토큰을_재발급한다() {
         // Given
         String refreshToken = "refreshToken";
         String email = "test@example.com";
@@ -63,8 +62,7 @@ class TokenServiceTest {
     }
 
     @Test
-    @DisplayName("유효하지 않은 refresh token이면 JwtValidateException을 던진다.")
-    public void reissueFailsWhenInvalidToken() {
+    public void 유효하지_않은_refresh_token이면_JwtValidateException을_던진다() {
         // Given
         String refreshToken = "refreshToken";
 
@@ -80,8 +78,7 @@ class TokenServiceTest {
     }
 
     @Test
-    @DisplayName("사용자를 찾을 수 없을 때 토큰 재발급 실패한다.")
-    public void reissueFailsWhenUserNotFound() {
+    public void 사용자를_찾을_수_없을_때_토큰_재발급_실패한다() {
         // Given
         String refreshToken = "refreshToken";
         String email = "test@example.com";

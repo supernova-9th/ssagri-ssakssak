@@ -28,8 +28,7 @@ class TokenControllerTest extends RestDocsSupport {
     TokenService tokenService;
 
     @Test
-    @DisplayName("토큰 재발급 테스트")
-    void reissue() throws Exception {
+    void 토큰_재발급을_한다() throws Exception {
         // given
         var request = "refresh-token";
         given(tokenService.reissue(any(String.class))).willReturn(new TokenResponse("access", "refresh"));

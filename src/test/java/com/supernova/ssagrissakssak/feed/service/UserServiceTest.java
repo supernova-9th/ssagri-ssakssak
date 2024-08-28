@@ -90,7 +90,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자가 존재하고 모든 검증이 통과되면 활성화 상태가 변경된다.")
-    void approve() {
+    void 사용자가_존재하고_모든_검증이_통과되면_활성화_상태가_변경된다() {
         // Given
         String email = "test@example.com";
         String password = "encodedPassword";
@@ -117,8 +117,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("사용자가 존재하지 않으면 UserNotFoundException을 던진다.")
-    void approveFailsWhenUserNotFound() {
+    void 사용자가_존재하지_않으면_UserNotFoundException을_던진다() {
         String email = "test@example.com";
         String password = "encodedPassword";
         String authenticationCode = "ABC123";
@@ -136,8 +135,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("검증 중 예외가 발생하면 활성화 상태가 변경되지 않는다.")
-    void approveFailsWhenValidationThrowException() {
+    void 검증_중_예외가_발생하면_활성화_상태가_변경되지_않는다() {
         // Given
         String email = "test@example.com";
         String password = "encodedPassword";
@@ -165,8 +163,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("로그인을 한다.")
-    void signIn() throws Exception {
+    void 로그인을_한다() throws Exception {
         // given
         String email = "test@email.com";
         String password = "password123";
@@ -192,8 +189,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("로그인시 활성화된 사용자가 아닐때 실패한다.")
-    void signInFailsWhenUserNotFound() {
+    void 로그인시_활성화된_사용자가_아닐때_실패한다() {
         // given
         String email = "test@email.com";
         SignInRequest request = new SignInRequest(email, "password123");
@@ -207,8 +203,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("비밀번호가 틀리면 로그인을 실패한다.")
-    void signInFailsWhenMismatchPassword() {
+    void 비밀번호가_틀리면_로그인을_실패한다() {
         // given
         String email = "test@email.com";
         String password = "wrongPassword";

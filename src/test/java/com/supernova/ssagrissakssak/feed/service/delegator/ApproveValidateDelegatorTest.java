@@ -55,8 +55,7 @@ class ApproveValidateDelegatorTest {
     }
 
     @Test
-    @DisplayName("모든 validators가 순차적으로 호출되어야 한다.")
-    void testValidate() {
+    void 모든_validators가_순차적으로_호출되어야_한다() {
         approveValidateDelegator.validate(user, approveModel);
 
         verify(activeStatusValidator, times(1)).validate(user, approveModel);
@@ -65,8 +64,7 @@ class ApproveValidateDelegatorTest {
     }
 
     @Test
-    @DisplayName("하나의 validator에서 예외가 발생하면 다음 validator는 호출되지 않는다.")
-    void testValidateStopsOnException() {
+    void 하나의_validator에서_예외가_발생하면_다음_validator는_호출되지_않는다() {
         doThrow(new RuntimeException()).when(activeStatusValidator).validate(user, approveModel);
 
         try {
