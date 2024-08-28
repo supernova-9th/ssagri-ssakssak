@@ -31,7 +31,7 @@ class SnsApiClientTest {
     }
 
     @Test
-    void callSnsLikeApi_Success() {
+    void 좋아요_API_호출_성공한다() {
         // given
         ResponseEntity<String> mockResponse = new ResponseEntity<>(HttpStatus.OK);
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class))).thenReturn(mockResponse);
@@ -47,7 +47,7 @@ class SnsApiClientTest {
     }
 
     @Test
-    void callSnsLikeApi_Failure() {
+    void 좋아요_API_호출_실패한다() {
         // given
         ResponseEntity<String> mockResponse = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class))).thenReturn(mockResponse);
@@ -63,7 +63,7 @@ class SnsApiClientTest {
     }
 
     @Test
-    void callSnsLikeApi_ThrowsException() {
+    void 좋아요_API_호출_예외발생한다() {
         // given
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class)))
                 .thenThrow(new RestClientException("API call failed"));
@@ -77,7 +77,7 @@ class SnsApiClientTest {
 
     //공유하기
     @Test
-    void callSnsShareApi_Success() {
+    void 공유_API_호출_성공한다() {
         // given
         ResponseEntity<String> mockResponse = new ResponseEntity<>(HttpStatus.OK);
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class))).thenReturn(mockResponse);
@@ -93,7 +93,7 @@ class SnsApiClientTest {
     }
 
     @Test
-    void callSnsShareApi_Failure() {
+    void 공유_API_호출_실패한다() {
         // given
         ResponseEntity<String> mockResponse = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class))).thenReturn(mockResponse);
@@ -109,7 +109,7 @@ class SnsApiClientTest {
     }
 
     @Test
-    void callSnsShareApi_ThrowsException() {
+    void 공유_API_호출_예외발생한다() {
         // given
         when(restTemplate.postForEntity(anyString(), eq(null), eq(String.class)))
                 .thenThrow(new RestClientException("API call failed"));

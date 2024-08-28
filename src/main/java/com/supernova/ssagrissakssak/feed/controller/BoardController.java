@@ -46,9 +46,10 @@ public class BoardController {
     }
 
     /**
-     * 게시물에 좋아요를 추가하는 메서드입니다.
+     * 게시물에 좋아요를 추가합니다.
      *
      * @param id 좋아요를 추가할 게시물의 ID
+     * @param loginUser 현재 로그인한 사용자 정보
      * @return 작업 결과를 담은 ResultResponse 객체
      */
     @PostMapping("/{id}/like")
@@ -57,6 +58,13 @@ public class BoardController {
         return new ResultResponse<>();
     }
 
+    /**
+     * 게시물을 공유합니다.
+     *
+     * @param id 공유할 게시물의 ID
+     * @param loginUser 현재 로그인한 사용자 정보
+     * @return 작업 결과를 담은 ResultResponse 객체
+     */
     @PostMapping("/{id}/share")
     public ResultResponse<Void> addShareBoardContent(@PathVariable Long id, @AuthenticationPrincipal LoginUser loginUser) {
         boardService.shareBoardContent(id, loginUser.getId());

@@ -19,9 +19,6 @@ public class SnsApiClient {
         this.restTemplate = restTemplate;
     }
 
-    /**
-     * SNS API 요청에 필요한 정보를 담는 클래스입니다.
-     */
     public static class SnsApiRequest {
         private final ContentType type;
         private final Long id;
@@ -40,9 +37,6 @@ public class SnsApiClient {
         }
     }
 
-    /**
-     * SNS API 응답 결과를 나타내는 클래스입니다.
-     */
     public static class SnsApiResponse {
         private final boolean isSuccess;
 
@@ -72,6 +66,13 @@ public class SnsApiClient {
         }
     }
 
+    /**
+     * SNS의 공유 API를 호출합니다.
+     *
+     * @param request API 요청 정보
+     * @return API 호출 결과
+     * @throws ExternalApiException API 호출 중 오류가 발생했을 때 발생합니다.
+     */
     public SnsApiResponse callSnsShareApi(SnsApiRequest request) {
         String url = request.getType().getShareUrl(request.getId());
         try {
