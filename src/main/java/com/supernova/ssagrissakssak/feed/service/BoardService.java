@@ -58,7 +58,14 @@ public class BoardService {
         }
     }
 
-    /* 게시물 상세 조회 */
+    /**
+     * 주어진 ID를 기반으로 게시물의 상세 정보를 조회합니다.
+     * 게시물을 조회할 때 조회수(view count)가 증가하며, 게시물에 연관된 해시태그들도 함께 조회됩니다.
+     *
+     * @param id 조회할 게시물의 ID
+     * @return 게시물의 상세 정보와 연관된 해시태그들을 포함한 BoardDetailResponse 객체
+     * @throws BoardNotFoundException 주어진 ID에 해당하는 게시물을 찾을 수 없는 경우 발생
+     */
     public BoardDetailResponse getBoard(Long id) {
 
         BoardEntity board = boardRepository.findById(id).orElseThrow(
@@ -71,6 +78,19 @@ public class BoardService {
         return BoardDetailResponse.of(board, hashtags);
     }
 
+    /**
+     * 주어진 필터링, 정렬, 검색 조건에 따라 게시물 목록을 조회합니다.
+     * 조회된 게시물 목록은 BoardResponse 객체로 변환되어 반환됩니다.
+     *
+     * @param hashtag 게시물에 적용된 해시태그 (선택 사항)
+     * @param type 게시물의 타입 (선택 사항)
+     * @param orderBy 정렬 기준 필드 (예: "created_at", "view_count", "like_count")
+     * @param searchBy 검색할 필드 (예: "title", "content")
+     * @param search 검색어 (선택 사항)
+     * @param pageCount 페이지당 표시할 게시물 수
+     * @param page 조회할 페이지 번호
+     * @return 필터링 및 검색 조건에 맞는 게시물 목록을 담은 List<BoardResponse> 객체
+     */
     public List<BoardResponse> getBoards(String hashtag, String type, String orderBy, String searchBy,
                                          String search, Integer pageCount, Integer page) {
 

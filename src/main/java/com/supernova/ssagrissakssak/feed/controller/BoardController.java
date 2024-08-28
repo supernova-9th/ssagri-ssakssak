@@ -22,12 +22,29 @@ public class BoardController {
     private final BoardService boardService;
     private final BoardStatisticsService boardStatisticsService;
 
-    /* 게시물 상세 조회 */
+    /**
+     * 주어진 ID에 해당하는 게시물의 상세 정보를 조회하여 반환합니다.
+     *
+     * @param id 조회할 게시물의 ID
+     * @return 게시물의 상세 정보를 포함한 ResultResponse 객체 반환
+     */
     @GetMapping("/{id}")
     public ResultResponse<BoardDetailResponse> getBoard(@PathVariable Long id) {
         return new ResultResponse<>(boardService.getBoard(id));
     }
 
+    /**
+     * 주어진 필터링, 정렬, 검색 조건에 따라 모든 게시물 목록을 조회하여 반환합니다.
+     *
+     * @param hashtag 게시물에 적용된 해시태그 (선택 사항)
+     * @param type 게시물의 타입 (선택 사항)
+     * @param orderBy 정렬 기준 필드 (기본값: "created_at")
+     * @param searchBy 검색할 필드 (기본값: "title")
+     * @param search 검색어 (선택 사항)
+     * @param pageCount 페이지당 표시할 게시물 수 (기본값: 10)
+     * @param page 조회할 페이지 번호 (기본값: 0)
+     * @return 게시물 목록을 포함한 ResultResponse 객체 반환
+     */
     @GetMapping
     public ResultResponse<List<BoardResponse>> getAllBoard(
             @RequestParam(value = "hashtag", required = false) String hashtag,
