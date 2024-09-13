@@ -170,7 +170,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     /**
      * 주어진 정렬 기준에 따라 게시물 목록을 정렬하기 위한 OrderSpecifier 객체를 생성합니다.
      *
-     * 지원되는 정렬 기준:
+     * 정렬 기준:
      * - "created_at": 게시물 생성일 기준 내림차순 정렬
      * - "updated_at": 게시물 수정일 기준 내림차순 정렬
      * - "view_count": 게시물 조회수 기준 내림차순 정렬
