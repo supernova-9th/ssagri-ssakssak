@@ -5,18 +5,25 @@ import com.supernova.ssagrissakssak.core.enums.StatisticsTimeType;
 import com.supernova.ssagrissakssak.core.enums.StatisticsType;
 import com.supernova.ssagrissakssak.core.exception.BoardNotFoundException;
 import com.supernova.ssagrissakssak.core.exception.ExternalApiException;
+import com.supernova.ssagrissakssak.core.wrapper.PageResponse;
+import com.supernova.ssagrissakssak.feed.controller.request.BoardSearchRequest;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardDetailResponse;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardResponse;
+import com.supernova.ssagrissakssak.feed.persistence.repository.entity.BoardEntity;
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.HashtagEntity;
 import com.supernova.ssagrissakssak.feed.persistence.repository.model.StatisticsDto;
 import com.supernova.ssagrissakssak.feed.service.BoardService;
 import com.supernova.ssagrissakssak.feed.service.BoardStatisticsService;
+import com.supernova.ssagrissakssak.fixture.BoardFixture;
 import com.supernova.ssagrissakssak.mockuser.MockUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.time.LocalDateTime;
@@ -48,10 +55,10 @@ class BoardControllerTest extends RestDocsSupport {
     @MockBean
     private BoardStatisticsService boardStatisticsService;
 
-    private BoardDetailResponse boardDto;
+    private BoardDetailResponse boardDetailDto1;
     private BoardResponse boardsDto1;
     private BoardResponse boardsDto2;
-    private BoardDetailResponse dto1;
+    private BoardDetailResponse boardDetailDto2;
 
     @BeforeEach
     void setUp() {
@@ -72,10 +79,23 @@ class BoardControllerTest extends RestDocsSupport {
                 .toList();
 
         LocalDateTime now = LocalDateTime.now();
-        boardDto = BoardDetailResponse.builder()
+        boardDetailDto1 = BoardDetailResponse.builder()
                 .id(1L)
                 .type(ContentType.FACEBOOK)
                 .title("제목 테스트1")
+                .content("테스트 내용 입니다.")
+                .hashtags(hashtags)
+                .viewCount(600)
+                .likeCount(55)
+                .shareCount(20)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        boardDetailDto2 = BoardDetailResponse.builder()
+                .id(1L)
+                .type(ContentType.FACEBOOK)
+                .title("제목 테스트2")
                 .content("테스트 내용 입니다.")
                 .hashtags(hashtags)
                 .viewCount(10)
@@ -88,11 +108,11 @@ class BoardControllerTest extends RestDocsSupport {
         boardsDto1 = BoardResponse.builder()
                 .id(2L)
                 .type(ContentType.FACEBOOK)
-                .title("제목 테스트2")
+                .title("제목 테스트3")
                 .content("테스트 내용 입니다.")
-                .viewCount(10)
-                .likeCount(5)
-                .shareCount(2)
+                .viewCount(200)
+                .likeCount(52)
+                .shareCount(28)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -100,21 +120,8 @@ class BoardControllerTest extends RestDocsSupport {
         boardsDto2 = BoardResponse.builder()
                 .id(3L)
                 .type(ContentType.FACEBOOK)
-                .title("제목 테스트3")
+                .title("제목 테스트4")
                 .content("테스트 내용 입니다.")
-                .viewCount(10)
-                .likeCount(5)
-                .shareCount(2)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-
-        dto1 = BoardDetailResponse.builder()
-                .id(1L)
-                .type(ContentType.FACEBOOK)
-                .title("제목 테스트1")
-                .content("테스트 내용 입니다.")
-                .hashtags(hashtags)
                 .viewCount(10)
                 .likeCount(5)
                 .shareCount(2)
@@ -128,7 +135,7 @@ class BoardControllerTest extends RestDocsSupport {
     @MockUser
     void 게시물_상세조회_API() throws Exception {
         // When
-        when(boardService.getBoard(1L)).thenReturn(boardDto);
+        when(boardService.getBoard(1L)).thenReturn(boardDetailDto1);
 
         // Then
         mockMvc.perform(get("/boards/{id}", 1L)
@@ -175,17 +182,26 @@ class BoardControllerTest extends RestDocsSupport {
     void 게시물_목록조회_API() throws Exception {
 
         // Given
-        List<BoardResponse> boardResponses = Arrays.asList(boardsDto1, boardsDto2);
+        BoardEntity boardEntity1 = BoardFixture.get();
+        BoardEntity boardEntity2 = BoardFixture.get();
+
+        // Page<BoardEntity> 생성 (PageRequest.of(0, 10)로 페이지 요청을 만든다고 가정)
+        List<BoardEntity> boardEntityList = List.of(boardEntity1, boardEntity2);
+        Page<BoardEntity> entityPage = new PageImpl<>(boardEntityList, PageRequest.of(0, 10), boardEntityList.size());
+
+        List<BoardResponse> dtoList = List.of(boardsDto1, boardsDto2);
+
+        PageResponse<BoardResponse> pageResponse = PageResponse.of(entityPage, dtoList);
 
         // When
-        when(boardService.getBoards(anyString(), anyString(), anyString(), anyString(), anyString(), anyInt(), anyInt()))
-                .thenReturn(boardResponses);
+        when(boardService.getAllDetailBoards(any(BoardSearchRequest.class), any(PageRequest.class)))
+                .thenReturn(pageResponse);
 
         // Then
         mockMvc.perform(get("/boards")
                         .param("hashtag", "test")
                         .param("type", "FACEBOOK")
-                        .param("orderBy", "created_at")
+                        .param("orderBy", "view_count")
                         .param("searchBy", "title")
                         .param("search", "테스트")
                         .param("pageCount", "10")
@@ -211,27 +227,37 @@ class BoardControllerTest extends RestDocsSupport {
                                 fieldWithPath("status").type(JsonFieldType.NUMBER)
                                         .description("응답 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING)
-                                        .description("결과"),
-                                fieldWithPath("result").type(JsonFieldType.ARRAY)
-                                        .description("응답 데이터"),
-                                fieldWithPath("result[].id").type(JsonFieldType.NUMBER)
+                                        .description("결과 메시지"),
+                                fieldWithPath("result").type(JsonFieldType.OBJECT)
+                                        .description("응답 데이터 객체"),
+                                fieldWithPath("result.currentPage").type(JsonFieldType.NUMBER)
+                                        .description("현재 페이지 번호"),
+                                fieldWithPath("result.lastPage").type(JsonFieldType.NUMBER)
+                                        .description("마지막 페이지 번호"),
+                                fieldWithPath("result.limit").type(JsonFieldType.NUMBER)
+                                        .description("페이지당 게시물 수"),
+                                fieldWithPath("result.total").type(JsonFieldType.NUMBER)
+                                        .description("총 게시물 수"),
+                                fieldWithPath("result.contents").type(JsonFieldType.ARRAY)
+                                        .description("게시물 목록 배열"),
+                                fieldWithPath("result.contents[].id").type(JsonFieldType.NUMBER)
                                         .description("게시물 아이디"),
-                                fieldWithPath("result[].type").type(JsonFieldType.STRING)
-                                        .description("SNS 종류"),
-                                fieldWithPath("result[].title").type(JsonFieldType.STRING)
-                                        .description("제목"),
-                                fieldWithPath("result[].content").type(JsonFieldType.STRING)
-                                        .description("내용"),
-                                fieldWithPath("result[].viewCount").type(JsonFieldType.NUMBER)
+                                fieldWithPath("result.contents[].type").type(JsonFieldType.STRING)
+                                        .description("SNS 종류 (예: FACEBOOK, INSTAGRAM)"),
+                                fieldWithPath("result.contents[].title").type(JsonFieldType.STRING)
+                                        .description("게시물 제목"),
+                                fieldWithPath("result.contents[].content").type(JsonFieldType.STRING)
+                                        .description("게시물 내용"),
+                                fieldWithPath("result.contents[].viewCount").type(JsonFieldType.NUMBER)
                                         .description("조회 수"),
-                                fieldWithPath("result[].likeCount").type(JsonFieldType.NUMBER)
+                                fieldWithPath("result.contents[].likeCount").type(JsonFieldType.NUMBER)
                                         .description("좋아요 수"),
-                                fieldWithPath("result[].shareCount").type(JsonFieldType.NUMBER)
+                                fieldWithPath("result.contents[].shareCount").type(JsonFieldType.NUMBER)
                                         .description("공유 수"),
-                                fieldWithPath("result[].createdAt").type(JsonFieldType.STRING)
-                                        .description("생성 일자"),
-                                fieldWithPath("result[].updatedAt").type(JsonFieldType.STRING)
-                                        .description("수정 일자")
+                                fieldWithPath("result.contents[].createdAt").type(JsonFieldType.STRING)
+                                        .description("게시물 생성 일자"),
+                                fieldWithPath("result.contents[].updatedAt").type(JsonFieldType.STRING)
+                                        .description("게시물 수정 일자")
                         )
                 ));
     }
