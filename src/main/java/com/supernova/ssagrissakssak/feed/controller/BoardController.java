@@ -1,7 +1,9 @@
 package com.supernova.ssagrissakssak.feed.controller;
 
 import com.supernova.ssagrissakssak.core.security.LoginUser;
+import com.supernova.ssagrissakssak.core.wrapper.PageResponse;
 import com.supernova.ssagrissakssak.core.wrapper.ResultResponse;
+import com.supernova.ssagrissakssak.feed.controller.request.BoardSearchRequest;
 import com.supernova.ssagrissakssak.feed.controller.request.BoardStatisticsRequest;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardDetailResponse;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardResponse;
@@ -34,30 +36,16 @@ public class BoardController {
     }
 
     /**
-     * 주어진 필터링, 정렬, 검색 조건에 따라 모든 게시물 목록을 조회하여 반환합니다.
+     * 주어진 검색 조건 및 페이징 정보를 사용하여 게시물 목록을 조회하고, 결과를 반환합니다.
      *
-     * @param hashtag 게시물에 적용된 해시태그 (선택 사항)
-     * @param type 게시물의 타입 (선택 사항)
-     * @param orderBy 정렬 기준 필드 (기본값: "created_at")
-     * @param searchBy 검색할 필드 (기본값: "title")
-     * @param search 검색어 (선택 사항)
-     * @param pageCount 페이지당 표시할 게시물 수 (기본값: 10)
-     * @param page 조회할 페이지 번호 (기본값: 0)
-     * @return 게시물 목록을 포함한 ResultResponse 객체 반환
+     * @param searchRequest 게시물 검색 조건을 포함하는 객체 (해시태그, 타입, 정렬 기준, 검색어 및 페이징 정보 포함)
+     * @return 검색 및 페이징 조건에 맞는 게시물 목록을 포함한 ResultResponse 객체를 반환합니다.
+     *         ResultResponse<PageResponse<BoardResponse>> 형식으로, 페이징된 게시물 목록 반환
      */
-    @GetMapping
-    public ResultResponse<List<BoardResponse>> getAllBoard(
-            @RequestParam(value = "hashtag", required = false) String hashtag,
-            @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "orderBy", defaultValue = "created_at") String orderBy,
-            @RequestParam(value = "searchBy", defaultValue = "title") String searchBy,
-            @RequestParam(value = "search", required = false) String search,
-            @RequestParam(value = "pageCount", defaultValue = "10") Integer pageCount,
-            @RequestParam(value = "page", defaultValue = "0") Integer page
-    ) {
-        List<BoardResponse> boardList = boardService.getBoards(
-                hashtag, type, orderBy, searchBy, search, pageCount, page
-        );
+    @GetMapping()
+    public ResultResponse<PageResponse<BoardResponse>> getAllSearchBoards(@ModelAttribute BoardSearchRequest searchRequest) {
+        // 쿼리 파라미터 & 페이징 요청 정보 전달
+        PageResponse<BoardResponse> boardList = boardService.getAllDetailBoards(searchRequest, searchRequest.toPageRequest());
 
         return new ResultResponse<>(boardList);
     }

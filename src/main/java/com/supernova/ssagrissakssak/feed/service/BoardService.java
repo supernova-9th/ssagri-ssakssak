@@ -3,6 +3,8 @@ package com.supernova.ssagrissakssak.feed.service;
 import com.supernova.ssagrissakssak.client.SnsApiClient;
 import com.supernova.ssagrissakssak.core.exception.BoardNotFoundException;
 import com.supernova.ssagrissakssak.core.exception.ErrorCode;
+import com.supernova.ssagrissakssak.core.wrapper.PageResponse;
+import com.supernova.ssagrissakssak.feed.controller.request.BoardSearchRequest;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardDetailResponse;
 import com.supernova.ssagrissakssak.feed.controller.response.BoardResponse;
 import com.supernova.ssagrissakssak.feed.persistence.repository.BoardRepository;
@@ -11,11 +13,12 @@ import com.supernova.ssagrissakssak.feed.persistence.repository.entity.BoardEnti
 import com.supernova.ssagrissakssak.feed.persistence.repository.entity.HashtagEntity;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -79,26 +82,23 @@ public class BoardService {
     }
 
     /**
-     * 주어진 필터링, 정렬, 검색 조건에 따라 게시물 목록을 조회합니다.
-     * 조회된 게시물 목록은 BoardResponse 객체로 변환되어 반환됩니다.
+     * 게시물 검색 조건과 페이징 정보를 사용하여 상세 게시물 목록을 조회하고 변환하는 메서드입니다.
+     * BoardEntity 목록을 조회한 후, 이를 BoardResponse로 변환하여 페이징된 응답을 반환합니다.
      *
-     * @param hashtag 게시물에 적용된 해시태그 (선택 사항)
-     * @param type 게시물의 타입 (선택 사항)
-     * @param orderBy 정렬 기준 필드 (예: "created_at", "view_count", "like_count")
-     * @param searchBy 검색할 필드 (예: "title", "content")
-     * @param search 검색어 (선택 사항)
-     * @param pageCount 페이지당 표시할 게시물 수
-     * @param page 조회할 페이지 번호
-     * @return 필터링 및 검색 조건에 맞는 게시물 목록을 담은 List<BoardResponse> 객체
+     * @param searchRequest 게시물 검색 조건을 포함하는 객체 (해시태그, 타입, 정렬 기준, 검색 기준, 검색어 등)
+     * @param pageRequest 페이징 정보를 포함한 PageRequest 객체 (페이지 번호 및 페이지 크기)
+     * @return 검색 및 페이징 조건에 맞는 게시물 목록을 포함한 PageResponse<BoardResponse> 객체를 반환
      */
-    public List<BoardResponse> getBoards(String hashtag, String type, String orderBy, String searchBy,
-                                         String search, Integer pageCount, Integer page) {
+    public PageResponse<BoardResponse> getAllDetailBoards(BoardSearchRequest searchRequest, PageRequest pageRequest) {
 
-        List<BoardEntity> boards = boardRepository.getBoards(hashtag, type, orderBy, searchBy, search, pageCount, page);
+        Page<BoardEntity> boardEntities = boardRepository.getAllBoards(searchRequest, pageRequest);
 
-        return boards.stream()
+        // BoardEntity -> BoardResponse 변환
+        List<BoardResponse> boardResponses = boardEntities
                 .map(BoardResponse::of)
-                .collect(Collectors.toList());
+                .getContent();
+
+        return PageResponse.of(boardEntities, boardResponses);
     }
 
 }
