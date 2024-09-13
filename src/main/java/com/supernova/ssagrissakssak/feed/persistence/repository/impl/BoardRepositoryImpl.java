@@ -98,8 +98,9 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
             conditions.and(typeCondition(searchRequest.type(), board));
         }
 
-        // 검색 기준과 검색어가 비어 있지 않으면 검색 조건을 추가
-        if (!ObjectUtils.isEmpty(searchRequest.type()) && !ObjectUtils.isEmpty(searchRequest.searchBy())) {
+        // 검색어가 비어 있지 않으면 검색 조건을 추가
+        if (!ObjectUtils.isEmpty(searchRequest.search())) {
+            // searchBy가 비어있으면 기본값으로 검색
             conditions.and(searchCondition(searchRequest.searchBy(), searchRequest.search(), board));
         }
 
@@ -156,13 +157,18 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
      * @return 검색 조건을 나타내는 BooleanExpression 객체. 검색 필드가 유효하지 않은 경우 null 반환.
      */
     private BooleanExpression searchCondition(String searchBy, String search, QBoardEntity board) {
+
+        if (ObjectUtils.isEmpty(searchBy)) {
+            searchBy = "title,content";
+        }
+
         if ("title".equalsIgnoreCase(searchBy)) {
             return board.title.like("%" + search + "%");
         } else if ("content".equalsIgnoreCase(searchBy)) {
             return board.content.like("%" + search + "%");
         } else if ("title,content".equalsIgnoreCase(searchBy)) {
             return board.title.like("%" + search + "%")
-                    .and(board.content.like("%" + search + "%"));
+                    .or(board.content.like("%" + search + "%"));
         }
         return null;
     }
