@@ -26,21 +26,12 @@ public class PageResponse<T> {
             this.contents = contents;
         }
 
-        public static <T> PageResponse<T> of(int page, int limit, long total, List<T> contents) {
-            return new PageResponse<>(calculateCurrentPage(page), calculateMaxPage(total, limit), limit, total, contents);
-        }
-
-        public static <T> PageResponse<T> of(Page<T> page) {
-            int limit = page.getSize();
-            return new PageResponse<>(calculateCurrentPage(page.getNumber()), calculateMaxPage(page.getTotalElements(), limit), limit, page.getTotalElements(), page.getContent());
-        }
-
         // Page<Entity> -> List<Dto>
         public static <T, U> PageResponse<U> of(Page<T> entityPage, List<U> dtoList) {
             int limit = entityPage.getSize();
             return new PageResponse<>(
                     calculateCurrentPage(entityPage.getNumber()),
-                    calculateMaxPage(entityPage.getTotalElements(), limit),
+                    entityPage.getTotalPages(),
                     limit,
                     entityPage.getTotalElements(),
                     dtoList
@@ -54,11 +45,5 @@ public class PageResponse<T> {
             return page + 1;
         }
 
-        /**
-         * 최대 페이지 수를 계산하는 메서드
-         */
-        private static int calculateMaxPage(long total, int limit) {
-            return (int) Math.ceil((double) total / limit);
-        }
     }
 
