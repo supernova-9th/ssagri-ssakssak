@@ -50,6 +50,9 @@ public class BoardEntity extends BaseEntity {
         this.shareCount++;
     }
 
+    /**
+     * 게시물의 조회 수를 1 증가시킵니다.
+     */
     public void viewCountUp() {
         this.viewCount += 1;
     }

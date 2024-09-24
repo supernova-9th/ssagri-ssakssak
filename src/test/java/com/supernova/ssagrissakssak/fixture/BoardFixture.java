@@ -48,4 +48,15 @@ public class BoardFixture {
                 .shareCount(shareCount)
                 .build();
     }
+
+    public static BoardEntity get(String title, String content) {
+        return BoardEntity.builder()
+                .type(ContentType.FACEBOOK)
+                .title(title)
+                .content(content)
+                .viewCount(10)
+                .likeCount(5)
+                .shareCount(2)
+                .build();
+    }
 }

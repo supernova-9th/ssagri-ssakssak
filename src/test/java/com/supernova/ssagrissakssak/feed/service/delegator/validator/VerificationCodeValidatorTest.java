@@ -20,8 +20,7 @@ class VerificationCodeValidatorTest {
     }
 
     @Test
-    @DisplayName("인증 코드가 일치하면 예외가 발생하지 않는다.")
-    void testValidateThrowsInvalidVerificationCodeException() {
+    void 인증_코드가_일치하면_예외가_발생하지_않는다() {
         String email = "test@example.com";
         String password = "encodedPassword";
         String authenticationCode = "ABC123";
@@ -39,8 +38,7 @@ class VerificationCodeValidatorTest {
     }
 
     @Test
-    @DisplayName("인증 코드가 일치하지 않으면 InvalidVerificationCodeException을 던진다.")
-    void testValidateDoesNotThrowException() {
+    void 인증_코드가_일치하지_않으면_InvalidVerificationCodeException을_던진다() {
         String email = "test@example.com";
         String password = "encodedPassword";
         String authenticationCode = "ABC123";

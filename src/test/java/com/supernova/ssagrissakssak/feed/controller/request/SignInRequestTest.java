@@ -22,8 +22,7 @@ class SignInRequestTest {
     }
 
     @Test
-    @DisplayName("이메일과 비밀번호 형식이 올바를 경우 request dto가 생성된다.")
-    void testValidSignInRequest() {
+    void 이메일과_비밀번호_형식이_올바를_경우_request_dto가_생성된다() {
         SignInRequest request = new SignInRequest("test@example.com", "password123");
         var violations = validator.validate(request);
         assertThat(violations).isEmpty();
@@ -31,8 +30,7 @@ class SignInRequestTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"invalid-email", "test@", "@example.com"})
-    @DisplayName("이메일 형식이 올바르지 않을 경우 예외가 발생한다.")
-    void emailValidate(String email) {
+    void 이메일_형식이_올바르지_않을_경우_예외가_발생한다(String email) {
         SignInRequest request = new SignInRequest(email, "password123");
         var violations = validator.validate(request);
         assertThat(violations)
@@ -45,8 +43,7 @@ class SignInRequestTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"", " "})
-    @DisplayName("이메일은 비어있을 수 없다.")
-    void emailValidate2(String email) {
+    void 이메일은_비어있을_수_없다(String email) {
         SignInRequest request = new SignInRequest(email, "password123");
         var violations = validator.validate(request);
         assertThat(violations)
@@ -59,8 +56,7 @@ class SignInRequestTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"", " "})
-    @DisplayName("비밀번호는 비어있을 수 없다.")
-    void passwordValidate(String password) {
+    void 비밀번호는_비어있을_수_없다(String password) {
         SignInRequest request = new SignInRequest("test@example.com", password);
         var violations = validator.validate(request);
         assertThat(violations)

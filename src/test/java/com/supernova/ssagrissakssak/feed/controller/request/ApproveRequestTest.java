@@ -22,8 +22,7 @@ class ApproveRequestTest {
     }
 
     @Test
-    @DisplayName("이메일, 비밀번호, 인증 코드가 올바를 경우 request dto가 생성된다.")
-    void testValidApproveRequestModel() {
+    void 이메일_비밀번호_인증_코드가_올바를_경우_request_dto가_생성된다() {
         ApproveRequest request = new ApproveRequest("test@example.com", "password123", "ABC123");
         var violations = validator.validate(request);
         assertThat(violations).isEmpty();
@@ -31,8 +30,7 @@ class ApproveRequestTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"invalid-email", "test@", "@example.com"})
-    @DisplayName("이메일 형식이 올바르지 않을 경우 예외가 발생한다.")
-    void emailValidate(String email) {
+    void 이메일_형식이_올바르지_않을_경우_예외가_발생한다(String email) {
         ApproveRequest request = new ApproveRequest(email, "password123", "ABC123");
         var violations = validator.validate(request);
         assertThat(violations)
@@ -45,8 +43,7 @@ class ApproveRequestTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"", " "})
-    @DisplayName("이메일은 비어있을 수 없다.")
-    void emailValidate2(String email) {
+    void 이메일은_비어있을_수_없다(String email) {
         ApproveRequest request = new ApproveRequest(email, "password123", "ABC123");
         var violations = validator.validate(request);
         assertThat(violations)
@@ -59,8 +56,7 @@ class ApproveRequestTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"", " "})
-    @DisplayName("비밀번호는 비어있을 수 없다.")
-    void passwordValidate(String password) {
+    void 비밀번호는_비어있을_수_없다(String password) {
         ApproveRequest request = new ApproveRequest("test@example.com", password, "ABC123");
         var violations = validator.validate(request);
         assertThat(violations)
@@ -73,8 +69,7 @@ class ApproveRequestTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"short", "123456789"})
-    @DisplayName("비밀번호는 10자 이상이어야 한다.")
-    void passwordValidate2(String password) {
+    void 비밀번호는_10자_이상이어야_한다(String password) {
         ApproveRequest request = new ApproveRequest("test@example.com", password, "ABC123");
         var violations = validator.validate(request);
         assertThat(violations)
@@ -87,8 +82,7 @@ class ApproveRequestTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"123456789"})
-    @DisplayName("비밀번호는 숫자로만 이루어질 수 없다.")
-    void passwordValidate3(String password) {
+    void 비밀번호는_숫자로만_이루어질_수_없다(String password) {
         ApproveRequest request = new ApproveRequest("test@example.com", password, "ABC123");
         var violations = validator.validate(request);
         assertThat(violations)
@@ -101,8 +95,7 @@ class ApproveRequestTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"ABC12", "A1B2C3D4", "A1@3B6"})
-    @DisplayName("인증 코드는 6자리여야 하며, 숫자와 영문자로만 구성되어야 한다.")
-    void authenticationCodeValidate(String authenticationCode) {
+    void 인증_코드는_6자리여야_하며_숫자와_영문자로만_구성되어야_한다(String authenticationCode) {
         ApproveRequest request = new ApproveRequest("test@example.com", "password123", authenticationCode);
         var violations = validator.validate(request);
         assertThat(violations)
